@@ -1,7 +1,6 @@
 SecureWitness
 =================
-# Requirements
-## Questions
+## Requirements Questions
 
 1. Can you post unencrypted information anonymously?
 2. What are the requirements for a sufficient password to the site?
