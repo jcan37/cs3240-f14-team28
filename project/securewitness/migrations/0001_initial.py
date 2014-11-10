@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -18,6 +20,7 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(max_length=1000)),
                 ('location', models.CharField(max_length=200)),
                 ('encrypted', models.BooleanField(default=True)),
+                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -33,22 +36,5 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='User',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('email', models.CharField(max_length=100)),
-                ('password', models.CharField(max_length=100)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.AddField(
-            model_name='bulletin',
-            name='author',
-            field=models.ForeignKey(to='securewitness.User'),
-            preserve_default=True,
         ),
     ]

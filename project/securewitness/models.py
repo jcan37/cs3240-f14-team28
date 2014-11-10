@@ -1,14 +1,8 @@
 from django.db import models
-
-class User(models.Model):
-	email = models.CharField(max_length=100)
-	password = models.CharField(max_length=100)
-
-	def __str__(self):
-		return 'Email: ' + self.email
+from django.conf import settings
 
 class Bulletin(models.Model):
-	author = models.ForeignKey(User)
+	author = models.ForeignKey(settings.AUTH_USER_MODEL)
 	pub_date = models.DateTimeField("date published")
 	description = models.CharField(max_length=1000)
 	location = models.CharField(max_length=200)
@@ -23,4 +17,4 @@ class File(models.Model):
 	url = models.CharField(max_length=500)
 	
 	def __str__(self):
-		return 'Bulletin: ' + str(self.bulletin) + '\nUrl: ' + str(url)
+		return 'Bulletin: ' + str(self.bulletin) + '\nUrl: ' + str(self.url)
