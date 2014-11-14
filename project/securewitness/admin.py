@@ -1,5 +1,5 @@
 from django.contrib import admin
-from securewitness.models import Bulletin, File
+from securewitness.models import Bulletin, Folder, File
 
 class FileInline(admin.TabularInline):
 	model = File
@@ -18,5 +18,10 @@ class FileAdmin(admin.ModelAdmin):
 	search_fields = ['url', 'bulletin']
 
 
+class FolderAdmin(admin.ModelAdmin):
+        search_fields = ['name']
+
+
 admin.site.register(Bulletin, BulletinAdmin)
+admin.site.register(Folder, FolderAdmin)
 admin.site.register(File, FileAdmin)
