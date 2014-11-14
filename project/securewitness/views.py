@@ -19,7 +19,7 @@ def postbulletin(request):
 			newBulletin = Bulletin(author=request.user, pub_date=timezone.now(), description=form.cleaned_data['description'], location=form.cleaned_data['location'])
 			newBulletin.save()
 
-			bulletinFile = File(bulletin=newBulletin)
+			bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name)
 			bulletinFile.save()
 
 			f = request.FILES['files']
@@ -33,3 +33,6 @@ def postbulletin(request):
 	
 	return render(request, 'securewitness/postbulletin.html', {'form': form})
 
+
+def index(request):
+	return HttpResponse('Hello world')
