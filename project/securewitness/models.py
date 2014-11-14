@@ -15,8 +15,8 @@ class Bulletin(models.Model):
 
 
 class File(models.Model):
+	name = models.CharField(max_length=256)
 	bulletin = models.ForeignKey('Bulletin')
-	url = models.CharField(max_length=500)
 	encrypted = models.BooleanField(default=True)	
 
 	def __str__(self):

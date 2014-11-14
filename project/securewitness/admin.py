@@ -1,6 +1,11 @@
 from django.contrib import admin
 from securewitness.models import Bulletin, Folder, File
 
+class BulletinInline(admin.TabularInline):
+	model = Bulletin
+	extra = 3
+
+
 class FileInline(admin.TabularInline):
 	model = File
 	extra = 3
@@ -14,11 +19,12 @@ class BulletinAdmin(admin.ModelAdmin):
 
 
 class FileAdmin(admin.ModelAdmin):
-	list_display = ['url', 'bulletin', 'encrypted']
-	search_fields = ['url', 'bulletin']
+	list_display = ['name', 'bulletin', 'encrypted']
+	search_fields = ['name', 'bulletin']
 
 
 class FolderAdmin(admin.ModelAdmin):
+	inlines = [BulletinInline]
         search_fields = ['name']
 
 
