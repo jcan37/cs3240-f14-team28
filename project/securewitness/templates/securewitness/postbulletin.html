@@ -9,7 +9,7 @@
  </form> -->
 
  <div class="container">
- 	<form action="postbulletin" method="post" role="form" enctype="multipart/form-data">
+ 	<form action="postbulletin" method="post" role="form" enctype="multipart/form-data">{% csrf_token %}
  		<div class="form-group">
  			<input type="hidden" name="csrfmiddlewaretoken" value="CMqoV0sCyDvt88207umm6okVAeBB3sJQ">
  		</div>

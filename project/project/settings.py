@@ -19,7 +19,7 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # **********
 # Added by JC
 # **********
-
+STATIC_URL = os.path.join(BASE_DIR, 'static')
 # **********
 
 # SECURITY WARNING: keep the secret key used in production secret!

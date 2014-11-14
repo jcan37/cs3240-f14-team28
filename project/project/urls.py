@@ -4,7 +4,7 @@ from securewitness import views
 from django.views.generic import RedirectView
 
 urlpatterns = patterns('',
-    url(r'^$', RedirectView.as_view(url='/securewitness/')),
+    url(r'^$', RedirectView.as_view(url='/securewitness/index/')),
     url(r'^securewitness/', include('securewitness.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
