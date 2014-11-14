@@ -7,7 +7,6 @@ urlpatterns = patterns('',
     url(r'^$', RedirectView.as_view(url='/securewitness/')),
     url(r'^securewitness/', include('securewitness.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^postbulletin/', views.postbulletin, name='postbulletin')
 )
 
 admin.site.site_header = 'SecureWitness Administration'
