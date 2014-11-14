@@ -22,7 +22,7 @@ def postbulletin(request):
 			bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name)
 			bulletinFile.save()
 
-			 = request.FILES['files']
+			f = request.FILES['files']
 			with open('securewitness/files/' + str(bulletinFile.id) + '_' + request.FILES['files'].name, 'wb') as destination:
 				for chunk in f.chunks():
 					destination.write(chunk)
