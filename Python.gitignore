@@ -54,3 +54,4 @@ docs/_build/
 target/
 
 project/securewitness/files/
+project/db.sqlite3
