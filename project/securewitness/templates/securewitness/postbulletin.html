@@ -1,27 +1,23 @@
-<head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-</head>
+{% extends "securewitness/navigation.html" %}
 
-<!-- <form action="postbulletin" method="post" role="form" enctype="multipart/form-data">
-	{% csrf_token %}
-    {{ form }}
- 	<input type="submit" value="Post Bulletin"/>
- </form> -->
+{% block content %}
 
- <div class="container">
- 	<form action="postbulletin" method="post" role="form" enctype="multipart/form-data">{% csrf_token %}
- 		<div class="form-group">
- 			<input type="hidden" name="csrfmiddlewaretoken" value="CMqoV0sCyDvt88207umm6okVAeBB3sJQ">
- 		</div>
- 		<div class="form-group">
- 			<label for="id_description">Description:</label><input id="id_description" maxlength="1000" name="description" type="text" class="form-control">
- 		</div>
- 		<div class="form-group">
- 			<label for="id_location">Location:</label><input id="id_location" maxlength="200" name="location" type="text" class="form-control">
- 		</div>
- 		<div class="form-group">
- 			<label for="id_files">Files:</label><input id="id_files" name="files" type="file">
- 		</div>
- 		<input type="submit" value="Post Bulletin">
- 	</form>
- </div>
+<div class="container">
+  <form action="post" method="post" role="form" enctype="multipart/form-data">{% csrf_token %}
+ 	<div class="form-group">
+ 	  <input type="hidden" name="csrfmiddlewaretoken" value="CMqoV0sCyDvt88207umm6okVAeBB3sJQ">
+ 	</div>
+ 	<div class="form-group">
+ 	  <label for="id_description">Description:</label><input id="id_description" maxlength="512" name="description" type="text" class="form-control">
+ 	</div>
+ 	<div class="form-group">
+ 	  <label for="id_location">Location:</label><input id="id_location" maxlength="256" name="location" type="text" class="form-control">
+ 	</div>
+ 	<div class="form-group">
+ 	  <label for="id_files">Files:</label><input id="id_files" name="files" type="file">
+ 	</div>
+ 	<input type="submit" value="Post Bulletin">
+  </form>
+</div>
+
+{% endblock %}
