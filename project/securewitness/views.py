@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from models import Bulletin, File
-from users import retrieve_user_state
+from users import retrieve_user_state, signup_user
 
 # Classes
 # **********
@@ -25,11 +25,27 @@ def index(request):
 
 
 def signup(request):
-        return render(request, 'securewitness/signup.html')
+        context = {}
+        if request.method == 'POST':
+                if 'signup' in request.POST:
+                        # sign user up
+                        context.update(signup_user(request))
+                        if not (context['fields_blank'] or 
+                                context['user_exists'] or 
+                                context['password_mismatch']):
+                                return HttpResponseRedirect('..')
+                elif 'login' in request.POST:
+                        # sign user in
+                        context.update(retrieve_user_state(request))
+                        if context['logged_in']:
+                                return HttpResponseRedirect('..')
+        return render(request, 'securewitness/signup.html', context)
 
 
+# @login_required('../signup/')
 def post(request):
         context = retrieve_user_state(request)
+        
         if context['sign_up'] or not context['logged_in']:
                 return HttpResponseRedirect('../signup/')
         else:

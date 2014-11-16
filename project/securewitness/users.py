@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
 
 def retrieve_user_state(request):
@@ -30,4 +31,28 @@ def retrieve_user_state(request):
         context['username'] = request.user.username
     if context['username'] is not None:
         context['logged_in'] = True
+    return context
+
+
+def signup_user(request):
+    context = { 'fields_blank' : False ,
+                'user_exists' : False ,
+                'password_mismatch' : False }
+    email = request.POST.get('email', '')
+    username = request.POST.get('new_username', '')
+    password1 = request.POST.get('password1', '')
+    password2 = request.POST.get('password2', '')
+    if email == '' or username == '' or password1 == '' or password2 == '':
+        context['fields_blank'] = True
+        return context
+    if User.objects.filter(username=username).count():
+        context['user_exists'] = True
+        return context
+    if password1 != password2:
+        context['password_mismatch'] = True
+        return context
+    user = User.objects.create_user(username, email, password1)
+    user.save()
+    user = authenticate(username=username, password=password1)
+    login(request, user)
     return context
