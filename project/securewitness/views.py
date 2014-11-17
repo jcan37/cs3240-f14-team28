@@ -21,9 +21,10 @@ def index(request):
 	if context['sign_up']:
 		return HttpResponseRedirect('../signup/')
 	else:
-		bulletin_list = Bulletin.objects.filter(author=request.user)
-		print bulletin_list
-		context['bulletin_list'] = bulletin_list
+		if request.user.is_authenticated():
+			bulletin_list = Bulletin.objects.filter(author=request.user)
+			print bulletin_list
+			context['bulletin_list'] = bulletin_list
 		return render(request, 'securewitness/index.html', context)
 
 def signup(request):
