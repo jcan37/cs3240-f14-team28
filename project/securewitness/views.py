@@ -2,7 +2,6 @@ from django.http import HttpResponseRedirect
 from django import forms
 from django.shortcuts import render
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 
 from models import Bulletin, File
 from users import retrieve_user_state, signup_user
@@ -43,25 +42,27 @@ def signup(request):
 	return render(request, 'securewitness/signup.html', context)
 
 
-@login_required(login_url='../signup/')
 def post(request):
 	context = retrieve_user_state(request)
-	if request.method == 'POST':
-		form = BulletinForm(request.POST, request.FILES)
-		if form.is_valid():
-			newBulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
-					       description=form.cleaned_data['description'], 
-					       location=form.cleaned_data['location'])
-			newBulletin.save()
-			bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name)
-			bulletinFile.save()
-			f = request.FILES['files']
-			with open('securewitness/files/' + str(bulletinFile.id) + 
-				  '_' + request.FILES['files'].name, 'wb') as destination:
-				for chunk in f.chunks():
-					destination.write(chunk)
-			return render(request, 'securewitness/bulletinposted.html', context)
-		else:
-			form = BulletinForm()
-		context['form'] = form
-	return render(request, 'securewitness/postbulletin.html', context)
+	if not context['logged_in']:
+		return HttpResponseRedirect('../signup/')
+	else:
+                if request.method == 'POST':
+                        form = BulletinForm(request.POST, request.FILES)
+                        if form.is_valid():
+                                newBulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
+                                                       description=form.cleaned_data['description'], 
+                                                       location=form.cleaned_data['location'])
+                                newBulletin.save()
+                                bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name)
+                                bulletinFile.save()
+                                f = request.FILES['files']
+                                with open('securewitness/files/' + str(bulletinFile.id) + 
+                                          '_' + request.FILES['files'].name, 'wb') as destination:
+                                        for chunk in f.chunks():
+                                                destination.write(chunk)
+                                return render(request, 'securewitness/bulletinposted.html', context)
+                        else:
+                                form = BulletinForm()
+                        context['form'] = form
+                return render(request, 'securewitness/postbulletin.html', context)
