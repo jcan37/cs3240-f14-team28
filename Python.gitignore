@@ -53,8 +53,5 @@ docs/_build/
 # PyBuilder
 target/
 
-# CUSTOM
-*~
-project/securewitness/files/
+project/securewitness/files/*
 project/db.sqlite3
-
