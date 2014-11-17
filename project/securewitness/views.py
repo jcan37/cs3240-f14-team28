@@ -18,14 +18,11 @@ class BulletinForm(forms.Form):
 # **********
 def index(request):
 	context = retrieve_user_state(request)
-	if context['sign_up']:
-		return HttpResponseRedirect('../signup/')
-	else:
-		if request.user.is_authenticated():
-			bulletin_list = Bulletin.objects.filter(author=request.user)
-			print bulletin_list
-			context['bulletin_list'] = bulletin_list
-		return render(request, 'securewitness/index.html', context)
+        if request.user.is_authenticated():
+                bulletin_list = Bulletin.objects.filter(author=request.user)
+                print bulletin_list
+                context['bulletin_list'] = bulletin_list
+        return render(request, 'securewitness/index.html', context)
 
 def signup(request):
 	context = {}
