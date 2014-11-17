@@ -6,21 +6,21 @@
 
 {% block content %}
 
-<form class="navbar-form navbar-left" role="form" method="post"
-> {% csrf_token %}
+<div class="container">
+
+	<form class="navbar-form navbar-left" role="form" method="post"
+	> {% csrf_token %}
 	<div class="form-group" style="margin-top: 30px;">		  
 		<input type="text" placeholder="Search" class="form-control" name="search" id="search">
 	</div>	
 </form>
 
-<div class="container" style="margin-top: 30px;">
-	<h1>Hello World</h1>
-</div>
+<h1>Hello World</h1>
 
 <ul>
-{% for bulletin in bulletin_list %}
+	{% for bulletin in bulletin_list %}
 	<li> {{ bulletin.description }} </li>
-{% endfor %}
+	{% endfor %}
 </ul>
-
+</div>
 {% endblock %}
