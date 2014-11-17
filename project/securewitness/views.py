@@ -23,6 +23,8 @@ def index(request):
 	else:
 		return render(request, 'securewitness/index.html', context)
 
+def search(field):
+    
 
 def signup(request):
 	context = {}
