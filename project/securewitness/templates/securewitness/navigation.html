@@ -1,5 +1,23 @@
 {% extends "base.html" %}
 
+{% block body_padding %}
+<style>
+  @media(min-width:768px) {
+    body {
+      padding-top: 50px;
+      padding-bottom: 20px;
+    }
+  }
+
+  @media(max-width:767px) {
+    body {
+      padding-top: 180px;
+      padding-bottom: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block body %}
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
