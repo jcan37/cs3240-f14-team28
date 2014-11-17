@@ -42,19 +42,31 @@
 	  
 	  {% if fields_blank %}
 	  
-	  <div class="alert alert-danger" role="alert">You forgot to fill something out.</div>
+	  <div class="alert alert-danger" role="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
+		You forgot to fill something out.
+	  </div>
 
 	  {% endif %}
 
 	  {% if user_exists %}
 	  
-	  <div class="alert alert-danger" role="alert">That username is already taken.</div>
+	  <div class="alert alert-danger" role="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
+		That username is already taken.
+	  </div>
 
 	  {% endif %}
 	  
 	  {% if password_mismatch %}
 	  
-	  <div class="alert alert-danger" role="alert">Your passwords didn't match.</div>
+	  <div class="alert alert-danger" role="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
+		Your passwords didn't match.
+	  </div>
 
 	  {% endif %}
 
@@ -75,7 +87,11 @@
 
 	  {% if form.errors or invalid_login %}
 	  
-	  <div class="alert alert-danger" role="alert">Incorrect username or password.</div>
+	  <div class="alert alert-danger" role="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
+		Incorrect username or password.
+	  </div>
 
 	  {% endif %}
 
