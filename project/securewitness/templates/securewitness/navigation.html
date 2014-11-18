@@ -27,7 +27,7 @@
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="navbar-inner">
-	<div class="container-fluid">
+	<div class="container">
 
 	  <ul class="nav navbar-nav">
 		<li>
@@ -40,7 +40,7 @@
 		  </a>
 		</li>
 		<li class="{% block post_active %}{% endblock %}">
-		  <a href={% block post_link %}{% endblock %}>
+		  <a href={% block post_link %}"../post/"{% endblock %}>
 			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
 			Post
 		  </a>

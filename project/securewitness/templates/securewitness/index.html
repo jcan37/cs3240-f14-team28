@@ -2,25 +2,42 @@
 
 {% block home_active %}active{% endblock %}
 
-{% block post_link %}"../post/"{% endblock %}
-
 {% block content %}
 
 <div class="container">
+  <div class="row">
+	<div class="col-sm-3">
+	  <form class="search-form" role="form" method="post"> {% csrf_token %}
+		<div class="input-append">
+		  <input type="text" placeholder="Search" class="search-query" name="search" id="search">
+		  <button type="submit" class="btn"><span class="glyphicon glyphicon-search"></span></button>
+		</div>	
+	  </form>
+	</div>
+	
+	<div class="col-sm-9">
+	  <h1>Bulletins</h1>
 
-	<form class="navbar-form navbar-left" role="form" method="post"
-	> {% csrf_token %}
-	<div class="form-group" style="margin-top: 30px;">		  
-		<input type="text" placeholder="Search" class="form-control" name="search" id="search">
-	</div>	
-</form>
+	  {% if bulletin_list %}
 
-<h1>Hello World</h1>
+	  <ul>
+		
+		{% for bulletin in bulletin_list %}
 
-<ul>
-	{% for bulletin in bulletin_list %}
-	<li> {{ bulletin.description }} </li>
-	{% endfor %}
-</ul>
-</div>
+		<li> {{ bulletin.description }} </li>
+
+		{% endfor %}
+		
+	  </ul>
+
+	  {% else %}
+	  
+	  <p>No Bulletins to show.</p>
+	  
+	  {% endif %}
+
+	</div>
+  </div> <!-- row -->
+</div> <!-- container -->
+
 {% endblock %}
