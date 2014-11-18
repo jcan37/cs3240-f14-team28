@@ -35,11 +35,11 @@ def signup(request):
                     context['user_exists'] or 
                     context['password_mismatch']):
                 return HttpResponseRedirect('..')
-            elif 'login' in request.POST:
-                # sign user in
-                context.update(retrieve_user_state(request))
-                if context['logged_in']:
-                    return HttpResponseRedirect('..')
+        elif 'login' in request.POST:
+            # sign user in
+            context.update(retrieve_user_state(request))
+            if context['logged_in']:
+                return HttpResponseRedirect('..')
     return render(request, 'securewitness/signup.html', context)
 
 
