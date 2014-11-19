@@ -19,7 +19,7 @@ class BulletinAdmin(admin.ModelAdmin):
 
 
 class FileAdmin(admin.ModelAdmin):
-	list_display = ['name', 'bulletin', 'encrypted']
+	list_display = ['name', 'bulletin', 'is_encrypted']
 	search_fields = ['name', 'bulletin']
 
 

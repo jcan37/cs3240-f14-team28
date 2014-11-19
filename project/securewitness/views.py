@@ -1,3 +1,5 @@
+import uuid
+
 from django.http import HttpResponseRedirect
 from django import forms
 from django.shortcuts import render
@@ -5,6 +7,7 @@ from django.utils import timezone
 
 from models import Bulletin, File
 from users import retrieve_user_state, signup_user
+from files import encrypt
 
 # Classes
 # **********
@@ -55,13 +58,13 @@ def post(request):
                                        description=form.cleaned_data['description'], 
                                        location=form.cleaned_data['location'])
                 newBulletin.save()
-                bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name)
+                key = uuid.uuid4()
+                bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name, encryption_key=key.hex)
                 bulletinFile.save()
                 f = request.FILES['files']
                 with open('securewitness/files/' + str(bulletinFile.id) + 
-                          '_' + request.FILES['files'].name, 'wb') as destination:
-                    for chunk in f.chunks():
-                        destination.write(chunk)
+                          '_' + request.FILES['files'].name, 'wb') as dst:
+                    encrypt(f, dst, key)
                 return render(request, 'securewitness/bulletinposted.html', context)
             else:
                 form = BulletinForm()
