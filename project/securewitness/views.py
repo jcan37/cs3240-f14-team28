@@ -5,7 +5,7 @@ from django import forms
 from django.shortcuts import render
 from django.utils import timezone
 
-from models import Bulletin, File
+from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
 from files import encrypt
 
@@ -54,17 +54,19 @@ def post(request):
         if request.method == 'POST':
             form = BulletinForm(request.POST, request.FILES)
             if form.is_valid():
-                newBulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
+                new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                        description=form.cleaned_data['description'], 
                                        location=form.cleaned_data['location'])
-                newBulletin.save()
+                new_bulletin.save()
                 key = uuid.uuid4()
-                bulletinFile = File(bulletin=newBulletin, name=request.FILES['files'].name, encryption_key=key.hex)
-                bulletinFile.save()
+                new_file = File(bulletin=new_bulletin, name=request.FILES['files'].name, encryption_key=key.hex)
+                new_file.save()
                 f = request.FILES['files']
-                with open('securewitness/files/' + str(bulletinFile.id) + 
+                with open('securewitness/files/' + str(new_file.id) + 
                           '_' + request.FILES['files'].name, 'wb') as dst:
                     encrypt(f, dst, key)
+                new_permission = Permission(user=request.user, file=new_file)
+                new_permission.save()
                 return render(request, 'securewitness/bulletinposted.html', context)
             else:
                 form = BulletinForm()

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from securewitness.models import Bulletin, Folder, File
+from securewitness.models import Bulletin, File, Folder, Permission
 
 class BulletinInline(admin.TabularInline):
 	model = Bulletin
@@ -15,12 +15,12 @@ class BulletinAdmin(admin.ModelAdmin):
 	inlines = [FileInline]
 	list_display = ['description', 'author', 'pub_date', 'location', 'parent']
 	list_filter = ['pub_date']
-	search_fields = ['description', 'author', 'location', 'parent']
+	search_fields = ['description', 'author__username', 'location', 'parent__name']
 
 
 class FileAdmin(admin.ModelAdmin):
 	list_display = ['name', 'bulletin', 'is_encrypted']
-	search_fields = ['name', 'bulletin']
+	search_fields = ['name', 'bulletin__description']
 
 
 class FolderAdmin(admin.ModelAdmin):
@@ -28,6 +28,12 @@ class FolderAdmin(admin.ModelAdmin):
         search_fields = ['name']
 
 
+class PermissionAdmin(admin.ModelAdmin):
+        list_display = ['user', 'file']
+        search_fields = ['user__username', 'file__name']
+
+
 admin.site.register(Bulletin, BulletinAdmin)
 admin.site.register(Folder, FolderAdmin)
 admin.site.register(File, FileAdmin)
+admin.site.register(Permission, PermissionAdmin)

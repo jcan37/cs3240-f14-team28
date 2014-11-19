@@ -38,3 +38,11 @@ class Folder(models.Model):
         def __str__(self):
                 return str(self.name)
 
+
+class Permission(models.Model):
+        user = models.ForeignKey(settings.AUTH_USER_MODEL)
+        file = models.ForeignKey('File')
+
+
+        def __str__(self):
+                return str(self.user.username) + ' can view ' + str(self.file)
