@@ -26,15 +26,24 @@
 
 	  {% if bulletin_list %}
 
-	  <ul>
-		
+	  <table style="width:85%">
+		<tr>
+			<th>Date Published</th>
+			<th>Description</th>
+			<th>Location</th>
+			<th>Author</th>
+		</tr>
+
 		{% for bulletin in bulletin_list %}
-
-		<li> {{ bulletin.description }} </li>
-
+			<tr>
+				<td> {{ bulletin.pub_date }} </td>
+				<td> {{ bulletin.description }} </td>
+				<td> {{ bulletin.location }} </td>
+				<td> {{ bulletin.author }} </td>
+			</tr>
 		{% endfor %}
 		
-	  </ul>
+	  </table>
 
 	  {% else %}
 	  
