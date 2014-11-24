@@ -7,11 +7,8 @@ from django.utils import timezone
 
 from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
-<<<<<<< HEAD
 from search import search
-=======
 from files import encrypt
->>>>>>> b29b23b4c3c4a0baed6e38a063f6d8ba513ac20b
 
 # Classes
 # **********
