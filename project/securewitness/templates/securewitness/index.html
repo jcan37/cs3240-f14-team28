@@ -30,27 +30,20 @@
 	
 	<div class="col-sm-9">
 	  <h1>Bulletins</h1>
-	  <a href="http://goo.gl/4MzcIM">Reference document</a>
+
 	  {% if bulletin_list %}
+	
+	  {% for bulletin in bulletin_list %}
 
-	  <table style="width:85%">
-		<tr>
-			<th>Date Published</th>
-			<th>Description</th>
-			<th>Location</th>
-			<th>Author</th>
-		</tr>
-
-		{% for bulletin in bulletin_list %}
-			<tr>
-				<td> {{ bulletin.pub_date }} </td>
-				<td> {{ bulletin.description }} </td>
-				<td> {{ bulletin.location }} </td>
-				<td> {{ bulletin.author }} </td>
-			</tr>
-		{% endfor %}
+	  <div class="thumbnail">
+		<div class="caption">
+		  <p class="pull-right text-muted">Posted by {{ bulletin.author }}</p>
+		  <h3>{{ bulletin.description }}</h3>
+		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
+		</div>
+	  </div>
 		
-	  </table>
+	  {% endfor %}
 
 	  {% else %}
 	  

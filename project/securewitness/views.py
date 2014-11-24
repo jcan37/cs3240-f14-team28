@@ -1,14 +1,14 @@
 import uuid
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 from django.shortcuts import render
 from django.utils import timezone
 
 from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
+from files import encrypt, decrypt
 from search import search
-from files import encrypt
 
 # Classes
 # **********
@@ -21,6 +21,7 @@ class BulletinForm(forms.Form):
 # Views
 # **********
 def index(request):
+<<<<<<< HEAD
 	context = retrieve_user_state(request)
         if request.user.is_authenticated():
             bulletin_list = Bulletin.objects.filter(author=request.user)
@@ -35,6 +36,21 @@ def index(request):
         return render(request, 'securewitness/index.html', context)
 
 
+=======
+    context = retrieve_user_state(request)
+    bulletin_list = Bulletin.objects.all().order_by('-pub_date')
+    context['bulletin_list'] = bulletin_list
+    '''
+    if request.user.is_authenticated():x
+        bulletin_list = Bulletin.objects.filter(author=request.user)
+        context['bulletin_list'] = bulletin_list
+    '''
+    if request.method == 'POST':
+        if 'search' in request.POST:
+            search_field = request.POST.get('description', '')
+            search(search_field)
+    return render(request, 'securewitness/index.html', context)
+>>>>>>> 007dea97ae10c2b7a94693b322cfab7e6530690d
 
 
 def signup(request):
@@ -62,26 +78,42 @@ def post(request):
     else:
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
-                                   description=request.POST['description'], 
-                                   location=request.POST['location'])
+                                    description=request.POST['description'], 
+                                    location=request.POST['location'])
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
-                new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex)
+                new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex, content_type=f.content_type)
                 new_file.save()
                 with open('securewitness/files/' + str(new_file.id) + 
-                          '_' + request.FILES['files'].name, 'wb') as dst:
+                          '_' + f.name, 'wb') as dst:
                     encrypt(f, dst, key)
                 new_permission = Permission(user=request.user, bulletin=new_bulletin)
                 new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
 
+
 def download(request, fname):
-	context = retrieve_user_state(request)
-	if not context['logged_in']:
-		return HttpResponseRedirect('../signup/')
-	else:
-		has_permission = True
-		if has_permission:
-			Files.objects.filter(name=fname)
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../../signup/')
+    else:
+        f_id = fname.split('_')[0]
+        f_name = fname.split('_')[1]
+        files = File.objects.filter(id=f_id, name=f_name)
+        if len(files) > 0:
+            file_obj = files[0]
+            file_bulletin = file_obj.bulletin
+            dst = open(file_obj.name, 'wbr')
+            print Permission.objects.filter(bulletin=file_bulletin)
+            has_permission = len(Permission.objects.filter(bulletin=file_bulletin, user=request.user)) > 0
+            if has_permission:
+                with open('securewitness/files/' + fname, 'r') as f:
+                    decrypt(f, dst, uuid.UUID(file_obj.encryption_key))
+                    dst = open(file_obj.name, 'r')
+                    response = HttpResponse(dst, content_type=file_obj.content_type)
+                    response['Content-Disposition'] = 'attachment; filename=' + f_name
+                    return response
+            else:
+                return render(request, 'securewitness/nopermission.html', context)

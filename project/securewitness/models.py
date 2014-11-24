@@ -1,5 +1,8 @@
+import datetime
+
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 class Bulletin(models.Model):
 	description = models.CharField(max_length=128)
@@ -10,7 +13,31 @@ class Bulletin(models.Model):
 	encrypted = models.BooleanField(default=True)
 
 
-	def __str__(self):
+	def time_stamp(self):
+                # timezone.activate(settings.TIME_ZONE)
+                # now = timezone.now()
+                # pub_date = self.pub_date
+                now = timezone.now() - datetime.timedelta(hours=5)
+                pub_date = self.pub_date - datetime.timedelta(hours=5)
+                # **********
+                diff = now - pub_date
+                within_hour = now - datetime.timedelta(hours=1)
+                if pub_date > within_hour:
+                        mins = diff.days * 86400 + diff.seconds // 60
+                        if mins == 1:
+                                return str(mins) + ' minute ago'
+                        return str(mins) + ' minutes ago'
+                if pub_date.date() == now.date():
+                        return 'Today at ' + pub_date.time().strftime('%-I:%M %p')
+                yesterday = now - datetime.timedelta(days=1)
+                if pub_date.date() == yesterday.date():
+                        return 'Yesterday at ' + pub_date.time().strftime('%-I:%M %p')
+                within_year = now - datetime.timedelta(weeks=52)
+                if pub_date > within_year:
+                        return pub_date.strftime('%b %-d at %-I:%M %p')
+                return pub_date.strftime('%b %-d, %Y at %-I:%M %p')
+
+        def __str__(self):
 		if self.parent is not None:
 			return str(self.parent) + '/' + str(self.description)
 		return str(self.description)
@@ -20,6 +47,7 @@ class File(models.Model):
 	name = models.CharField(max_length=128)
 	bulletin = models.ForeignKey('Bulletin')
 	encryption_key = models.CharField(max_length=32, default='', editable=False)
+	content_type = models.CharField(max_length=128, default='')
 
 
         def is_encrypted(self):
