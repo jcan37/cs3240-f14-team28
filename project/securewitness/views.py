@@ -66,7 +66,8 @@ def post(request):
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                     description=request.POST['description'], 
-                                    location=request.POST['location'])
+                                    location=request.POST['location'],
+                                    encrypted='encrypted' in request.POST)
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
@@ -79,8 +80,10 @@ def post(request):
             new_permission.save()
             for user in request.POST['permissions'].split(','):
             	user = user.strip()
-            	new_permission = Permission(user=User.objects.get(username=user), bulletin=new_bulletin)
-            	new_permission.save()
+            	u = User.objects.filter(username=user)
+            	if len(u) > 0:
+            		new_permission = Permission(user=u[0], bulletin=new_bulletin)
+            		new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
 
@@ -98,7 +101,7 @@ def download(request, fname):
             file_bulletin = file_obj.bulletin
             dst = open(file_obj.name, 'wbr')
             print Permission.objects.filter(bulletin=file_bulletin)
-            has_permission = len(Permission.objects.filter(bulletin=file_bulletin, user=request.user)) > 0
+            has_permission = len(Permission.objects.filter(bulletin=file_bulletin, user=request.user)) > 0 or not file_bulletin.encrypted
             if has_permission:
                 with open('securewitness/files/' + fname, 'r') as f:
                     decrypt(f, dst, uuid.UUID(file_obj.encryption_key))
