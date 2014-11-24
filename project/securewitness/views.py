@@ -1,6 +1,6 @@
 import uuid
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 from django.shortcuts import render
 from django.utils import timezone
@@ -64,8 +64,7 @@ def post(request):
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
-            	print f.content_type
-                new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex)
+                new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex, content_type=f.content_type)
                 new_file.save()
                 with open('securewitness/files/' + str(new_file.id) + 
                           '_' + f.name, 'wb') as dst:
@@ -82,11 +81,19 @@ def download(request, fname):
 	else:
 		f_id = fname.split('_')[0]
 		f_name = fname.split('_')[1]
-		file_obj = File.objects.filter(id=f_id, name=f_name)
-		if len(file_obj) > 0:
-			has_permission = True
-			dst = open(file_obj[0].name, 'wb')
+		files = File.objects.filter(id=f_id, name=f_name)
+		if len(files) > 0:
+			file_obj = files[0]
+			file_bulletin = file_obj.bulletin
+			dst = open(file_obj.name, 'wbr')
+			print Permission.objects.filter(bulletin=file_bulletin)
+			has_permission = len(Permission.objects.filter(bulletin=file_bulletin, user=request.user)) > 0
 			if has_permission:
 				with open('securewitness/files/' + fname, 'r') as f:
-					decrypt(f, dst, uuid.UUID(file_obj[0].encryption_key))
-	return render(request, 'securewitness/nopermission.html', context)
+					decrypt(f, dst, uuid.UUID(file_obj.encryption_key))
+				dst = open(file_obj.name, 'r')
+				response = HttpResponse(dst, content_type=file_obj.content_type)
+				response['Content-Disposition'] = 'attachment; filename=' + f_name
+				return response
+			else:
+				return render(request, 'securewitness/nopermission.html', context)

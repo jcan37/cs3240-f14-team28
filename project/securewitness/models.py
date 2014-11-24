@@ -20,6 +20,7 @@ class File(models.Model):
 	name = models.CharField(max_length=128)
 	bulletin = models.ForeignKey('Bulletin')
 	encryption_key = models.CharField(max_length=32, default='', editable=False)
+	content_type = models.CharField(max_length=256, default='')
 
 
         def is_encrypted(self):
