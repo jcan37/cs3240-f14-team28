@@ -7,6 +7,7 @@ class Bulletin(models.Model):
 	pub_date = models.DateTimeField('date published')
 	location = models.CharField(max_length=256, default='Charlottesville, VA')
 	parent = models.ForeignKey('Folder', blank=True, null=True)
+	encrypted = models.BooleanField(default=True)
 
 
 	def __str__(self):
@@ -22,7 +23,7 @@ class File(models.Model):
 
 
         def is_encrypted(self):
-                return self.encryption_key != ''
+                return self.bulletin.encrypted
         is_encrypted.boolean = True
         is_encrypted.short_description = 'Encrypted?'
 
@@ -41,8 +42,8 @@ class Folder(models.Model):
 
 class Permission(models.Model):
         user = models.ForeignKey(settings.AUTH_USER_MODEL)
-        file = models.ForeignKey('File')
+        bulletin = models.ForeignKey('Bulletin')
 
 
         def __str__(self):
-                return str(self.user.username) + ' can view ' + str(self.file)
+                return str(self.user.username) + ' can view ' + str(self.bulletin)

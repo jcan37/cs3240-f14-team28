@@ -13,7 +13,7 @@ class FileInline(admin.TabularInline):
 
 class BulletinAdmin(admin.ModelAdmin):
 	inlines = [FileInline]
-	list_display = ['description', 'author', 'pub_date', 'location', 'parent']
+	list_display = ['description', 'author', 'pub_date', 'location', 'parent', 'encrypted']
 	list_filter = ['pub_date']
 	search_fields = ['description', 'author__username', 'location', 'parent__name']
 
@@ -29,8 +29,8 @@ class FolderAdmin(admin.ModelAdmin):
 
 
 class PermissionAdmin(admin.ModelAdmin):
-        list_display = ['user', 'file']
-        search_fields = ['user__username', 'file__name']
+        list_display = ['user', 'bulletin']
+        search_fields = ['user__username', 'bulletin__description']
 
 
 admin.site.register(Bulletin, BulletinAdmin)
