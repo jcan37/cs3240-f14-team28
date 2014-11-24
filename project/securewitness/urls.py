@@ -8,5 +8,5 @@ urlpatterns = patterns('securewitness.views',
                        url(r'^index/$', 'index', name='index'),
                        url(r'^signup/$', 'signup', name='signup'),
                        url(r'^post/$', 'post', name='post'),
-                       url(r'^download/($w+)', 'download', name='download'),
+                       url(r'^download/(?P<fname>[0-9]+_.+)/$', 'download', name='download'),
 )
