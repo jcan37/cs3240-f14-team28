@@ -69,7 +69,7 @@ def post(request):
                 with open('securewitness/files/' + str(new_file.id) + 
                           '_' + request.FILES['files'].name, 'wb') as dst:
                     encrypt(f, dst, key)
-                new_permission = Permission(user=request.user, file=new_file)
+                new_permission = Permission(user=request.user, bulletin=new_bulletin)
                 new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
