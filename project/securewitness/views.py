@@ -52,23 +52,27 @@ def post(request):
         return HttpResponseRedirect('../signup/')
     else:
         if request.method == 'POST':
-            form = BulletinForm(request.POST, request.FILES)
-            if form.is_valid():
-                new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
-                                       description=form.cleaned_data['description'], 
-                                       location=form.cleaned_data['location'])
-                new_bulletin.save()
-                key = uuid.uuid4()
-                new_file = File(bulletin=new_bulletin, name=request.FILES['files'].name, encryption_key=key.hex)
+            new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
+                                   description=request.POST['description'], 
+                                   location=request.POST['location'])
+            new_bulletin.save()
+            key = uuid.uuid4()
+            for f in request.FILES.getlist('files'):
+                new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex)
                 new_file.save()
-                f = request.FILES['files']
                 with open('securewitness/files/' + str(new_file.id) + 
                           '_' + request.FILES['files'].name, 'wb') as dst:
                     encrypt(f, dst, key)
                 new_permission = Permission(user=request.user, file=new_file)
                 new_permission.save()
-                return render(request, 'securewitness/bulletinposted.html', context)
-            else:
-                form = BulletinForm()
-            context['form'] = form
+            return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
+
+def download(request, fname):
+	context = retrieve_user_state(request)
+	if not context['logged_in']:
+		return HttpResponseRedirect('../signup/')
+	else:
+		has_permission = True
+		if has_permission:
+			Files.objects.filter(name=fname)
