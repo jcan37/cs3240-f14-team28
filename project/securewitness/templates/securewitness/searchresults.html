@@ -1,0 +1,11 @@
+{% extends "securewitness/navigation.html" %}
+
+{% block content %}
+
+<ul>
+	{% for bulletin in bulletin_list %}
+	<li> {{ bulletin.description }} </li>
+	{% endfor %}
+</ul>
+
+{% endblock %}
