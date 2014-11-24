@@ -3,7 +3,7 @@ from users import retrieve_user_state
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
-def search(field, author, year):
+def search(field):
     	bulletin_list = Bulletin.objects.all()
     	results = []
     	if bulletin_list is not None and len(bulletin_list) > 0:
