@@ -19,7 +19,10 @@
  	  <label for="id_files">Files:</label><input id="id_files" name="files" type="file" multiple>
  	</div>
  	<div class="form-group">
- 	  <label for="id_permissions">Users who can access these files (leave blank to allow anyone to access them):</label><input id="id_permissions" maxlength="512" name="permissions" type="text" class="form-control">
+ 	  <label for="id_permissions">Users who can access these files:</label><input id="id_permissions" maxlength="512" name="permissions" type="text" class="form-control">
+ 	</div>
+ 	<div class="checkbox">
+ 	  <label for="id_encrypted">Encrypt</label><input id="id_encrypted" name="encrypted" type="checkbox" checked>
  	</div>
  	<input type="submit" value="Post Bulletin">
   </form>
