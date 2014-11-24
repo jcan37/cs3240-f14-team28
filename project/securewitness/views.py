@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
-from files import encrypt
+from files import encrypt, decrypt
 
 # Classes
 # **********
@@ -58,12 +58,13 @@ def post(request):
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
+            	print f.content_type
                 new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex)
                 new_file.save()
                 with open('securewitness/files/' + str(new_file.id) + 
-                          '_' + request.FILES['files'].name, 'wb') as dst:
+                          '_' + f.name, 'wb') as dst:
                     encrypt(f, dst, key)
-                new_permission = Permission(user=request.user, file=new_file)
+                new_permission = Permission(user=request.user, bulletin=new_bulletin)
                 new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
@@ -71,8 +72,15 @@ def post(request):
 def download(request, fname):
 	context = retrieve_user_state(request)
 	if not context['logged_in']:
-		return HttpResponseRedirect('../signup/')
+		return HttpResponseRedirect('../../signup/')
 	else:
-		has_permission = True
-		if has_permission:
-			Files.objects.filter(name=fname)
+		f_id = fname.split('_')[0]
+		f_name = fname.split('_')[1]
+		file_obj = File.objects.filter(id=f_id, name=f_name)
+		if len(file_obj) > 0:
+			has_permission = True
+			dst = open(file_obj[0].name, 'wb')
+			if has_permission:
+				with open('securewitness/files/' + fname, 'r') as f:
+					decrypt(f, dst, uuid.UUID(file_obj[0].encryption_key))
+	return render(request, 'securewitness/nopermission.html', context)
