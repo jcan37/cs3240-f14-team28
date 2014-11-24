@@ -22,65 +22,87 @@
     <p>SecureWitness is a secure information management tool that allows you to create a searchable and encrypted database. 
 	  We protect sensitive information and shield the identity of victims or witnesses who provide testimony on human rights abuses.</p>
   </div>
-  <div class="thumbnail">
-	<div class="caption">
-	  <form role="form" method="post" id="signup_form"> {% csrf_token %}
-		<div class="form-group">
-		  <input type="text" placeholder="Email" class="form-control" name="email" id="email">
+  <div class="row">
+	<div class="col-sm-8">
+	  <div class="thumbnail">
+		<div class="caption">
+		  <form role="form" method="post" id="signup_form"> {% csrf_token %}
+			<div class="form-group">
+			  <input type="text" placeholder="Email" class="form-control" name="email" id="email">
+			</div>
+			<div class="form-group">
+			  <input type="text" placeholder="Username" class="form-control" name="new_username" id="new_username">
+			</div>
+			<div class="form-group">
+			  <input type="password" placeholder="Password" class="form-control" name="password1" id="password1">
+			</div>
+			<div class="form-group">
+			  <input type="password" placeholder="Retype Password" class="form-control" name="password2" id="password2">
+			</div>
+			<button type="submit" class="btn btn-primary" value="signup" name="signup">Sign up</button>
+		  </form>
+		  
+		  {% if fields_blank %}
+		  
+		  <div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			You forgot to fill something out.
+		  </div>
+		  
+		  {% endif %}
+		  
+		  {% if user_exists %}
+		  
+		  <div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			That username is already taken.
+		  </div>
+		  
+		  {% endif %}
+		  
+		  {% if password_mismatch %}
+		  
+		  <div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			Your passwords didn't match.
+		  </div>
+		  
+		  {% endif %}
+		  
 		</div>
-		<div class="form-group">
-		  <input type="text" placeholder="Username" class="form-control" name="new_username" id="new_username">
-		</div>
-		<div class="form-group">
-		  <input type="password" placeholder="Password" class="form-control" name="password1" id="password1">
-		</div>
-		<div class="form-group">
-		  <input type="password" placeholder="Retype Password" class="form-control" name="password2" id="password2">
-		</div>
-		<button type="submit" class="btn btn-primary" value="signup" name="signup">Sign up</button>
-	  </form>
-	  
-	  {% if fields_blank %}
-	  
-	  <div class="alert alert-danger" role="alert">You forgot to fill something out.</div>
-
-	  {% endif %}
-
-	  {% if user_exists %}
-	  
-	  <div class="alert alert-danger" role="alert">That username is already taken.</div>
-
-	  {% endif %}
-	  
-	  {% if password_mismatch %}
-	  
-	  <div class="alert alert-danger" role="alert">Your passwords didn't match.</div>
-
-	  {% endif %}
-
+	  </div>
 	</div>
-  </div>
-  <div class="thumbnail">
-	<div class="caption">
-      <h3>Already a member?</h3>
-	  <form role="form" method="post" id="signin_form"> {% csrf_token %}
-		<div class="form-group">
-		  <input type="text" placeholder="Username" class="form-control" name="username" id="username">
+	<div class="col-sm-4">
+	  <div class="thumbnail">
+		<div class="caption">
+		  <h3>Already a member?</h3>
+		  <form role="form" method="post" id="signin_form"> {% csrf_token %}
+			<div class="form-group">
+			  <input type="text" placeholder="Username" class="form-control" name="username" id="username">
+			</div>
+			<div class="form-group">
+			  <input type="password" placeholder="Password" class="form-control" name="password" id="password">
+			</div>
+			<button type="submit" class="btn btn-success" value="login" name="login">Sign in</button>
+		  </form>
+		  
+		  {% if form.errors or invalid_login %}
+		  
+		  <div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			Incorrect username or password.
+		  </div>
+		  
+		  {% endif %}
+		  
 		</div>
-		<div class="form-group">
-		  <input type="password" placeholder="Password" class="form-control" name="password" id="password">
-		</div>
-		<button type="submit" class="btn btn-success" value="login" name="login">Sign in</button>
-	  </form>
-
-	  {% if form.errors or invalid_login %}
-	  
-	  <div class="alert alert-danger" role="alert">Incorrect username or password.</div>
-
-	  {% endif %}
-
+	  </div>
 	</div>
-  </div>
-</div>
+  </div> <!-- row -->
+</div> <!-- container -->
 
 {% endblock %}

@@ -1,5 +1,7 @@
-from django.db import models
+from models import Bulletin
 
-	def search_bulletins(field)
-		results = Entry.objects.get(description__contains='field')
-		
+def search(field):
+    	results = Bulletin.objects.all().filter(field in description)
+        print results
+        context['results'] = results
+    	return render(request, 'searchresults.html', context)

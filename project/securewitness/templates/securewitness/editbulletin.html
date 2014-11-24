@@ -1,0 +1,26 @@
+{% extends "securewitness/navigation.html" %}
+
+{% block post_active %}active{% endblock %}
+
+{% block post_link %}"."{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <form action="" method="post" role="form" enctype="multipart/form-data">
+ 	{% csrf_token %}
+ 	<div class="form-group">
+ 	  <label for="id_description">Description:</label><input id="id_description" maxlength="512" name="description" type="text" class="form-control" value="{{description}}">
+ 	</div>
+ 	<div class="form-group">
+ 	  <label for="id_location">Location:</label><input id="id_location" maxlength="256" name="location" type="text" class="form-control" value="{{location}}">
+ 	</div>
+ 	<div class="form-group">
+ 	  <label for="id_files">Files:</label><input id="id_files" name="files" type="file" value="{{description}}">
+ 	</div>
+ 	<button type="submit" name="addfile" value="Post Bulletin">
+ 	<button type="submit" name="submit" value="Post Bulletin">
+  </form>
+</div>
+
+{% endblock %}
