@@ -26,6 +26,8 @@ def index(request):
     context = retrieve_user_state(request)
     bulletin_list = Bulletin.objects.all().order_by('-pub_date')
     context['bulletin_list'] = bulletin_list
+    folder_list = Folder.objects.all()
+    context['folder_list'] = folder_list
     '''
     if request.user.is_authenticated():x
         bulletin_list = Bulletin.objects.filter(author=request.user)

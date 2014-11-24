@@ -25,6 +25,18 @@
 		  </form>
 		</div>
 	  </div>
+	<div>
+	   <h4>Folders</h4>
+		{% if folder_list %}
+		{% for folder in folder_list %}
+		  <div>
+			{{ folder.name }}</option>
+		  </div>
+		{% endfor %}
+		{% else %}
+			<p>(Currently no folders)</p>
+		{% endif %}
+	</div>
 	</div>
 	<div class="col-sm-9">
 	  <h1>Bulletins</h1>
