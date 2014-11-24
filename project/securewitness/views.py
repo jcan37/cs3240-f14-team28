@@ -8,6 +8,7 @@ from django.utils import timezone
 from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
 from files import encrypt, decrypt
+from search import search
 
 # Classes
 # **********
@@ -20,12 +21,17 @@ class BulletinForm(forms.Form):
 # Views
 # **********
 def index(request):
-    context = retrieve_user_state(request)
-    if request.user.is_authenticated():
-        bulletin_list = Bulletin.objects.filter(author=request.user)
-        print bulletin_list
-        context['bulletin_list'] = bulletin_list
-    return render(request, 'securewitness/index.html', context)
+	context = retrieve_user_state(request)
+        if request.user.is_authenticated():
+            bulletin_list = Bulletin.objects.filter(author=request.user)
+            context['bulletin_list'] = bulletin_list
+        if request.method == 'POST':
+            if 'search' in request.POST:
+                search_field = request.POST.get('search', '')
+                search(search_field)
+        return render(request, 'securewitness/index.html', context)
+
+
 
 
 def signup(request):
