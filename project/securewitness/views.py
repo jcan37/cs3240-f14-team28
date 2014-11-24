@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 from django.shortcuts import render
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 from models import Bulletin, File, Permission
 from users import retrieve_user_state, signup_user
@@ -21,22 +23,6 @@ class BulletinForm(forms.Form):
 # Views
 # **********
 def index(request):
-<<<<<<< HEAD
-	context = retrieve_user_state(request)
-        if request.user.is_authenticated():
-            bulletin_list = Bulletin.objects.filter(author=request.user)
-            context['bulletin_list'] = bulletin_list
-        if request.method == 'POST':
-            if 'search' in request.POST:
-                print 'search pressed'
-                search_field = request.POST.get('description', '')
-                year = request.POST.get('year', '')
-                author = request.POST.get('author', '')
-                context['bulletin_list'] = search(search_field, year, author)
-        return render(request, 'securewitness/index.html', context)
-
-
-=======
     context = retrieve_user_state(request)
     bulletin_list = Bulletin.objects.all().order_by('-pub_date')
     context['bulletin_list'] = bulletin_list
@@ -50,7 +36,6 @@ def index(request):
             search_field = request.POST.get('description', '')
             search(search_field)
     return render(request, 'securewitness/index.html', context)
->>>>>>> 007dea97ae10c2b7a94693b322cfab7e6530690d
 
 
 def signup(request):
@@ -88,8 +73,12 @@ def post(request):
                 with open('securewitness/files/' + str(new_file.id) + 
                           '_' + f.name, 'wb') as dst:
                     encrypt(f, dst, key)
-                new_permission = Permission(user=request.user, bulletin=new_bulletin)
-                new_permission.save()
+            new_permission = Permission(user=request.user, bulletin=new_bulletin)
+            new_permission.save()
+            for user in request.POST['permissions'].split(','):
+            	user = user.strip()
+            	new_permission = Permission(user=User.objects.get(username=user), bulletin=new_bulletin)
+            	new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
 
