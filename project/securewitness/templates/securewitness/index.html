@@ -30,8 +30,9 @@
 
 	  <div class="thumbnail">
 		<div class="caption">
+		  <p class="pull-right text-muted">Posted by {{ bulletin.author }}</p>
 		  <h3>{{ bulletin.description }}</h3>
-		  <p>Posted by {{ bulletin.author }} in {{ bulletin.location }} on {{ bulletin.pub_date }}</p>
+		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
 		</div>
 	  </div>
 		

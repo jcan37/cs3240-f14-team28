@@ -22,9 +22,13 @@ class BulletinForm(forms.Form):
 # **********
 def index(request):
     context = retrieve_user_state(request)
-    if request.user.is_authenticated():
+    bulletin_list = Bulletin.objects.all().order_by('-pub_date')
+    context['bulletin_list'] = bulletin_list
+    '''
+    if request.user.is_authenticated():x
         bulletin_list = Bulletin.objects.filter(author=request.user)
         context['bulletin_list'] = bulletin_list
+    '''
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
@@ -57,8 +61,8 @@ def post(request):
     else:
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
-                                   description=request.POST['description'], 
-                                   location=request.POST['location'])
+                                    description=request.POST['description'], 
+                                    location=request.POST['location'])
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
