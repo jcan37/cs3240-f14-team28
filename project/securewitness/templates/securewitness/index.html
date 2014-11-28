@@ -24,6 +24,24 @@
 			  <button type="submit" class="btn btn-default" id="search" name="search"><span class="glyphicon glyphicon-search"></span></button>
 			</div>	
 		  </form>
+		  <div>
+			<h4>Folders</h4>
+
+			{% if folder_list %}
+
+			{% for folder in folder_list %}
+			
+			<div>{{ folder.name }}</div>
+
+			{% endfor %}
+
+			{% else %}
+
+			<p>(Currently no folders)</p>
+
+			{% endif %}
+
+		  </div>
 		</div> <!-- caption -->
 	  </div> <!-- thumbnail -->
 	</div> <!-- col-sm-3 -->
@@ -31,7 +49,7 @@
 	<!-- Content -->
 	<div class="col-sm-9">
 	  <h1>Bulletins</h1>
-
+	  
 	  {% if bulletin_list %}
 	
 	  {% for bulletin in bulletin_list %}
@@ -52,7 +70,7 @@
 	  
 	  {% endif %}
 
-	</div>
+	</div> <!-- col-sm-9 -->
   </div> <!-- row -->
 </div> <!-- container -->
 

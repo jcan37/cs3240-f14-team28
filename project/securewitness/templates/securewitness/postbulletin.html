@@ -24,7 +24,22 @@
  	<div class="checkbox">
  	  <label for="id_encrypted">Encrypt</label><input id="id_encrypted" name="encrypted" type="checkbox" checked>
  	</div>
- 	<input type="submit" value="Post Bulletin">
+
+ 	<div class="form-group">
+ 	  <label for="id_folders">Select folders to place in:</label>
+		{% if folder_list %}
+		{% for folder in folder_list %}
+		  <select>
+			<option value="test">{{ folder.name }}</option>
+		  </select>
+		{% endfor %}
+		{% else %}
+			<p>(Currently no folders)</p>
+		{% endif %}
+ 	</div>
+	<div>
+ 	  <input type="submit" value="Post Bulletin">
+	</div>
   </form>
 </div>
 

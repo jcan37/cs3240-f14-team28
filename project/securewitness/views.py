@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
-from models import Bulletin, File, Permission
+from models import Bulletin, File, Permission, Folder
 from users import retrieve_user_state, signup_user
 from files import encrypt, decrypt
 from search import search
@@ -26,6 +26,8 @@ def index(request):
     context = retrieve_user_state(request)
     bulletin_list = Bulletin.objects.all().order_by('-pub_date')
     context['bulletin_list'] = bulletin_list
+    folder_list = Folder.objects.all()
+    context['folder_list'] = folder_list
     '''
     if request.user.is_authenticated():x
         bulletin_list = Bulletin.objects.filter(author=request.user)
@@ -34,7 +36,7 @@ def index(request):
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
-            search(search_field)
+            context['bulletin_list'] = search(search_field)
     return render(request, 'securewitness/index.html', context)
 
 
@@ -61,6 +63,8 @@ def post(request):
     if not context['logged_in']:
         return HttpResponseRedirect('../signup/')
     else:
+    	folder_list = Folder.objects.all()
+    	context['folder_list'] = folder_list
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                     description=request.POST['description'], 
