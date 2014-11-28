@@ -59,6 +59,13 @@
 		  <p class="pull-right text-muted">Posted by {{ bulletin.author }}</p>
 		  <h3>{{ bulletin.description }}</h3>
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
+
+		  {% for file in bulletin.file_list %}
+
+		  <p><a href="../download/{{ file.pk }}_{{ file.name }}">{{ file.name }}</a></p>
+
+		  {% endfor %}
+
 		</div>
 	  </div>
 		

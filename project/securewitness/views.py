@@ -24,7 +24,7 @@ class BulletinForm(forms.Form):
 # **********
 def index(request):
     context = retrieve_user_state(request)
-    bulletin_list = Bulletin.objects.all().order_by('-pub_date')
+    bulletin_list = Bulletin.objects.order_by('-pub_date')
     context['bulletin_list'] = bulletin_list
     folder_list = Folder.objects.all()
     context['folder_list'] = folder_list

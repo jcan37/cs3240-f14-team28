@@ -12,6 +12,13 @@ class Bulletin(models.Model):
 	parent = models.ForeignKey('Folder', blank=True, null=True)
 	encrypted = models.BooleanField(default=True)
 
+        
+        def file_list(self):
+                all_files = File.objects.all()
+                if all_files is None or len(all_files) == 0:
+                        return []
+                return all_files.filter(bulletin=self)
+
 
 	def time_stamp(self):
                 # timezone.activate(settings.TIME_ZONE)
