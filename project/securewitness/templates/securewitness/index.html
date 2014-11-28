@@ -7,47 +7,51 @@
 <div class="container">
   <div class="row">
 	<!-- Side nav bar -->
-	<div class="col-sm-3" style="margin-top:24px;">
-	  <div class="thumbnail" style="background:black;">
-		<div class="caption">
-		  <form role="search" method="post"> {% csrf_token %}
-			<div class="form-group">
-			  <input type="text" placeholder="Description" class="form-control" name="description" id="description">
-			</div>
-			<div class="form-group">
+	<div class="col-md-4" style="margin-top:24px;">
+	  <div class="fixed">
+		<div class="col-md-3">
+		  <div class="thumbnail" style="background:black;">
+			<div class="caption">
+			  <form role="search" method="post"> {% csrf_token %}
+				<div class="form-group">
+				  <input type="text" placeholder="Description" class="form-control" name="description" id="description">
+				</div>
+				<div class="form-group">
 			  <input type="text" placeholder="Year" class="form-control" name="year" id="year">
-			</div>	
-			<div class="form-group">
-			  <input type="text" placeholder="Author" class="form-control" name="author" id="author">
-			</div>
-			<div class="input-group-btn">
-			  <button type="submit" class="btn btn-default" id="search" name="search"><span class="glyphicon glyphicon-search"></span></button>
-			</div>	
-		  </form>
-		  <div>
-			<h4>Folders</h4>
+				</div>	
+				<div class="form-group">
+				  <input type="text" placeholder="Author" class="form-control" name="author" id="author">
+				</div>
+				<div class="input-group-btn">
+				  <button type="submit" class="btn btn-default" id="search" name="search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>	
+			  </form>
+			  <div>
+				<h4>Folders</h4>
+				
+				{% if folder_list %}
+				
+				{% for folder in folder_list %}
+				
+				<div>{{ folder.name }}</div>
+				
+				{% endfor %}
+				
+				{% else %}
+				
+				<p>(Currently no folders)</p>
+				
+				{% endif %}
+				
+			  </div>
+			</div> <!-- caption -->
+		  </div> <!-- thumbnail -->
+		</div> <!-- col-md-3 -->
+	  </div> <!-- fixed -->
+	</div> <!-- col-md-4 -->
 
-			{% if folder_list %}
-
-			{% for folder in folder_list %}
-			
-			<div>{{ folder.name }}</div>
-
-			{% endfor %}
-
-			{% else %}
-
-			<p>(Currently no folders)</p>
-
-			{% endif %}
-
-		  </div>
-		</div> <!-- caption -->
-	  </div> <!-- thumbnail -->
-	</div> <!-- col-sm-3 -->
-	
 	<!-- Content -->
-	<div class="col-sm-9">
+	<div class="col-md-8">
 	  <h1>Bulletins</h1>
 	  
 	  {% if bulletin_list %}
@@ -60,15 +64,36 @@
 		  <h3>{{ bulletin.description }}</h3>
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
 
-		  {% for file in bulletin.file_list %}
+		  {% if bulletin.file_list|length > 0 %}
 
-		  <p><a href="../download/{{ file.pk }}_{{ file.name }}">{{ file.name }}</a></p>
+		  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			<div class="panel panel-default">
+			  <div class="panel-heading" role="tab" id="headingOne">
+				<h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ bulletin.pk }}" aria-expanded="true" aria-controls="collapseOne">
+					{{ bulletin.file_list|length }} file{% if bulletin.file_list|length > 1 %}s{% endif %}
+				  </a>
+				</h4>
+			  </div>
+			  <div id="collapse_{{ bulletin.pk }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+				<div class="panel-body">
 
-		  {% endfor %}
+				  {% for file in bulletin.file_list %}
 
-		</div>
-	  </div>
-		
+				  <p><a href="../download/{{ file.pk }}_{{ file.name }}">{{ file.name }}</a></p>
+
+				  {% endfor %}
+
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  
+		  {% endif %}
+
+		</div> <!-- caption -->
+	  </div> <!-- thumbnail -->
+	  
 	  {% endfor %}
 
 	  {% else %}

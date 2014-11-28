@@ -17,7 +17,7 @@ class Bulletin(models.Model):
                 all_files = File.objects.all()
                 if all_files is None or len(all_files) == 0:
                         return []
-                return all_files.filter(bulletin=self)
+                return all_files.filter(bulletin=self).order_by('name')
 
 
 	def time_stamp(self):
