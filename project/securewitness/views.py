@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
 from models import Bulletin, File, Permission, Folder
 from users import retrieve_user_state, signup_user
 from files import encrypt, decrypt
@@ -24,15 +23,14 @@ class BulletinForm(forms.Form):
 # **********
 def index(request):
     context = retrieve_user_state(request)
-    bulletin_list = Bulletin.objects.order_by('-pub_date')
-    context['bulletin_list'] = bulletin_list
-    folder_list = Folder.objects.all()
-    context['folder_list'] = folder_list
-    '''
-    if request.user.is_authenticated():x
-        bulletin_list = Bulletin.objects.filter(author=request.user)
-        context['bulletin_list'] = bulletin_list
-    '''
+    bulletin_list = Bulletin.objects.filter(encrypted=False)
+    # folder_list = Folder.objects.all()
+    # context['folder_list'] = folder_list
+    if request.user.is_authenticated():
+        permissions = Permission.objects.filter(user=request.user)
+        for permission in permissions:
+            bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+    context['bulletin_list'] = bulletin_list.order_by('-pub_date')
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')

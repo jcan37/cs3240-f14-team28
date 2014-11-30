@@ -11,7 +11,7 @@ class Bulletin(models.Model):
 	location = models.CharField(max_length=256, default='Charlottesville, VA')
 	parent = models.ForeignKey('Folder', blank=True, null=True)
 	encrypted = models.BooleanField(default=True)
-
+        
         
         def file_list(self):
                 all_files = File.objects.all()
@@ -68,6 +68,7 @@ class File(models.Model):
 
 
 class Folder(models.Model):
+        owner = models.ForeignKey(settings.AUTH_USER_MODEL)
         name = models.CharField(max_length=128)
 
 

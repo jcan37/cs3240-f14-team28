@@ -21,6 +21,8 @@
 				</div>
 			  </form>
 
+			  {% if logged_in %}
+
 			  <h4 style="color:white;">Show posts by</h4>
 			  <div class="list-group">
 				<a href="#" class="list-group-item active">
@@ -29,6 +31,8 @@
 				<a href="#" class="list-group-item">You</a>
 			  </div>
 			  
+			  {% endif %}
+
 			  <h4 style="color:white;">Show posts since</h4>
 			  <div class="list-group">
 				<a href="#" class="list-group-item active">
@@ -39,13 +43,19 @@
 				<a href="#" class="list-group-item">Past Year</a>
 			  </div>
 			  
-			  <h4 style="color:white;">Folders <a href="#"><span class="glyphicon glyphicon-plus-sign"></span></a></h4>
+			  {% if logged_in %}
+
+			  <h4 style="color:white;">
+				Folders <a href="#" style="vertical-align:middle;"><span class="glyphicon glyphicon-plus-sign"></span></a>
+			  </h4>
 
 			  {% for folder in folder_list %}
 			  
 			  <div>{{ folder.name }}</div>
 				
 			  {% endfor %}
+
+			  {% endif %}
 			  
 			</div> <!-- caption -->
 		  </div> <!-- thumbnail -->

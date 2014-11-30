@@ -25,6 +25,7 @@ class FileAdmin(admin.ModelAdmin):
 
 class FolderAdmin(admin.ModelAdmin):
 	inlines = [BulletinInline]
+        list_display = ['name', 'owner']
         search_fields = ['name']
 
 
