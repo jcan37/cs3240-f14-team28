@@ -24,7 +24,9 @@ class BulletinForm(forms.Form):
 def index(request):
     context = retrieve_user_state(request)
     bulletin_list = Bulletin.objects.filter(encrypted=False)
+    folder_list = None
     if request.user.is_authenticated():
+        folder_list = Folder.objects.filter(owner=request.user)
         permissions = Permission.objects.filter(user=request.user)
         for permission in permissions:
             bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
@@ -33,7 +35,6 @@ def index(request):
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
             context['bulletin_list'] = search(search_field)
-    folder_list = Folder.objects.filter(owner=request.user)
     context['folder_list'] = folder_list
     return render(request, 'securewitness/index.html', context)
 
