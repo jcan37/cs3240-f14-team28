@@ -68,7 +68,7 @@
 		  <button type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 			Sign in <span class="caret"></span>
 		  </button>
-		  <div class="dropdown-menu pull-right" style="padding:8px;">
+		  <div class="static-dropdown dropdown-menu pull-right" style="padding:8px;">
 			<form role="form" method="post"> {% csrf_token %}
 			  <div class="form-group">
 				<input type="text" placeholder="Username" class="form-control" name="username" id="username">
@@ -106,7 +106,7 @@
 {% block override_dropdown %}
 
 <script type="text/javascript">
-$('.dropdown-menu').click(function(event){
+$('.static-dropdown').click(function(event){
      event.stopPropagation();
  });
 </script>

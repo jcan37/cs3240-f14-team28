@@ -42,9 +42,13 @@
 				<a href="#" class="list-group-item">Past Month</a>
 				<a href="#" class="list-group-item">Past Year</a>
 			  </div>
-			  
-			  {% if logged_in %}
+			</div> <!-- caption -->
+		  </div> <!-- thumbnail -->
 
+		  {% if logged_in %}
+
+		  <div class="thumbnail" style="background:black;">
+			<div class="caption">
 			  <h4 style="color:white;">
 				Folders <a href="#" style="vertical-align:middle;"><span class="glyphicon glyphicon-plus-sign"></span></a>
 			  </h4>
@@ -53,12 +57,13 @@
 			  
 			  <div>{{ folder.name }}</div>
 				
-			  {% endfor %}
+			  {% endfor %}		  
 
-			  {% endif %}
-			  
 			</div> <!-- caption -->
 		  </div> <!-- thumbnail -->
+
+		  {% endif %}	
+
 		</div> <!-- col-md-3 -->
 	  </div> <!-- fixed -->
 	</div> <!-- col-md-4 -->
@@ -73,7 +78,15 @@
 
 	  <div class="thumbnail">
 		<div class="caption">
-		  <p class="pull-right text-muted">Posted by {{ bulletin.author }}</p>
+		  <div class="dropdown pull-right">
+			<p class="dropdown-toggle text-muted" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+			  Posted by {{ bulletin.author }} <a href="#"><span class="glyphicon glyphicon-cog"></span></a>
+			</p>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Move to...</a></li>
+			  <li class="disabled" role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+			</ul>
+		  </div>
 		  <h3>{{ bulletin.description }}</h3>
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
 
