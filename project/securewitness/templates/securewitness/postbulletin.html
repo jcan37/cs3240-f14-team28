@@ -30,11 +30,11 @@
  	<div class="form-group">
  	  <label for="id_folders">Select folders to place in:</label>
 		{% if folder_list %}
+		<select id="id_folders" name="folders">
 		{% for folder in folder_list %}
-		  <select>
-			<option value="test">{{ folder.name }}</option>
-		  </select>
+			<option value="{{ folder.name }}">{{ folder.name }}</option>
 		{% endfor %}
+		</select>
 		{% else %}
 			<p>(Currently no folders)</p>
 		{% endif %}
