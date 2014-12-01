@@ -70,7 +70,7 @@ def post(request):
                                     description=request.POST['description'], 
                                     location=request.POST['location'],
                                     encrypted='encrypted' in request.POST,
-                                    parent=request.POST['folders'])
+                                    parent=Folder.objects.filter(name=request.POST['folders'], owner=request.user)[0])
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
