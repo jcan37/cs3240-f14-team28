@@ -36,7 +36,7 @@ def index(request):
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
-            context['bulletin_list'] = search(search_field)
+            context['bulletin_list'] = search(search_field, request.user)
     context['folder_list'] = folder_list
     return render(request, 'securewitness/index.html', context)
 
@@ -70,8 +70,10 @@ def post(request):
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                     description=request.POST['description'], 
                                     location=request.POST['location'],
-                                    encrypted='encrypted' in request.POST,
-                                    parent=Folder.objects.filter(name=request.POST['folders'], owner=request.user)[0])
+                                    encrypted='encrypted' in request.POST)
+            # print request.POST['folders']
+            if len(folder_list) > 0:
+                new_bulletin.parent = Folder.objects.filter(name=request.POST['folders'], owner=request.user)[0]
             new_bulletin.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
