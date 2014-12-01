@@ -24,6 +24,7 @@ class BulletinForm(forms.Form):
 # **********
 def index(request):
     context = retrieve_user_state(request)
+    context['not_fire_fox'] = request.META['HTTP_USER_AGENT'] != 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
     bulletin_list = Bulletin.objects.filter(encrypted=False)
     folder_list = None
     if request.user.is_authenticated():

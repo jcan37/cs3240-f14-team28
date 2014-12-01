@@ -11,7 +11,13 @@
 	<!-- Side nav bar -->
 	<div class="col-md-4" style="margin-top:24px;">
 	  <div class="fixed">
+
+		{% if not_fire_fox %}
+
 		<div class="col-md-3">
+
+		  {% endif %}
+
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
 			  <form role="search" method="post"> {% csrf_token %}
@@ -78,13 +84,19 @@
 		  </div> <!-- thumbnail -->
 
 		  {% endif %}	
+		  
+		  {% if not_fire_fox %}
 
 		</div> <!-- col-md-3 -->
+
+		{% endif %}
+
 	  </div> <!-- fixed -->
 	</div> <!-- col-md-4 -->
 
 	<!-- Content -->
 	<div class="col-md-8">
+
 	  {% comment %}
 	  <nav>
 		<ul class="pager">
