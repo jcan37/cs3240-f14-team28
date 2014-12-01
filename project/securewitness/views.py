@@ -5,6 +5,7 @@ from django import forms
 from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth.models import User
+from os import remove
 
 from models import Bulletin, File, Permission, Folder
 from users import retrieve_user_state, signup_user
@@ -109,6 +110,7 @@ def download(request, fname):
                     dst = open(file_obj.name, 'r')
                     response = HttpResponse(dst, content_type=file_obj.content_type)
                     response['Content-Disposition'] = 'attachment; filename=' + f_name
+                    remove(file_obj.name)
                     return response
             else:
                 return render(request, 'securewitness/nopermission.html', context)
