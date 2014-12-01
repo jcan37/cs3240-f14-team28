@@ -63,7 +63,7 @@
 
 			  {% if folder_list %}
 			  
-			  <div class="list-group var-length-list">
+			  <div class="list-group var-length-nav">
 
 				{% for folder in folder_list %}
 
@@ -79,6 +79,14 @@
 			  </div>
 
 			  {% endif %}
+
+			  <div class="list-group var-length-nav">
+				<a href="#" class="list-group-item active">
+				  Any Date
+				</a>
+				<a href="#" class="list-group-item">Past Week</a>
+				<a href="#" class="list-group-item">Past Month</a>
+			  </div>
 
 			</div> <!-- caption -->
 		  </div> <!-- thumbnail -->
