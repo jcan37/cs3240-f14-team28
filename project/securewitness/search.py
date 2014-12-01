@@ -6,8 +6,6 @@ from itertools import chain
 
 def search(field):
     	bulletin_list = Bulletin.objects.all()
-    	desc_match = []
-    	auth_match = []
     	if bulletin_list is not None and len(bulletin_list) > 0:
     		desc_match = bulletin_list.filter(description=field)
     		auth_match = bulletin_list.filter(author__username=field)
