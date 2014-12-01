@@ -29,6 +29,7 @@
 
  	<div class="form-group">
  	  <label for="id_folders">Select folders to place in:</label>
+		<p></p>
 		{% if folder_list %}
 		<select id="id_folders" name="folders">
 		{% for folder in folder_list %}
@@ -40,7 +41,8 @@
 		{% endif %}
  	</div>
 	<div>
- 	  <input type="submit" value="Post Bulletin">
+ 	  <!-- (old button type) <input type="submit" class="btn btn-default" value="Post Bulletin"> -->
+          <button type="submit" class="btn btn-warning" value="post" name="post">Post Bulletin</button>
 	</div>
   </form>
 </div>
