@@ -36,7 +36,7 @@ def index(request):
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
-            context['bulletin_list'] = search(search_field)
+            context['bulletin_list'] = search(search_field, request.user)
     context['folder_list'] = folder_list
     return render(request, 'securewitness/index.html', context)
 
