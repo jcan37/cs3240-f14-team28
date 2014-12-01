@@ -61,7 +61,12 @@
 
 				{% for folder in folder_list %}
 
-				<a href="#" class="list-group-item">{{ folder.name }}</a>
+				<li class="list-group-item">
+				  <a href="#">{{ folder.name }}</a>
+				  <a class="pull-right" href="#">
+					<span class="glyphicon glyphicon-trash"></span>
+				  </a>
+				</li>
 
 				{% endfor %}
 
@@ -80,8 +85,16 @@
 
 	<!-- Content -->
 	<div class="col-md-8">
+	  {% comment %}
+	  <nav>
+		<ul class="pager">
+		  <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Folder 1</a></li>
+		</ul>
+	  </nav>
+	  {% endcomment %}
+
 	  <h1>Bulletins</h1>
-	  
+
 	  {% if bulletin_list %}
 	
 	  {% for bulletin in bulletin_list %}
