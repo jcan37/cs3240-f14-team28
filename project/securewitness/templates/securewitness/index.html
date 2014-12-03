@@ -22,7 +22,7 @@
 			<div class="caption">
 			  <form role="search" method="post"> {% csrf_token %}
 				<div class="input-group">
-				  <input type="text" placeholder="Keyword, Author, Location" class="form-control" name="description" id="description">
+				  <input type="text" placeholder="Description, Author or Location" class="form-control" name="description" id="description">
 				  <div class="input-group-btn">
 					<button type="submit" class="btn btn-default" id="search" name="search"><span class="glyphicon glyphicon-search"></span></button>
 				  </div>
@@ -54,7 +54,7 @@
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
 			  <h4 style="color:white;">
-				Folders <a href="#" style="vertical-align:middle;"><span class="glyphicon glyphicon-plus-sign"></span></a>
+				Folders <a href="#newFolder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
 			  </h4>
 
 			  {% if folder_list %}
@@ -114,12 +114,17 @@
 			  Posted by {{ bulletin.author }} <a href="#" style="vertical-align:middle;"><span class="glyphicon glyphicon-cog"></span></a>
 			</p>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-			  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Move to...</a></li>
-			  <li {% if bulletin.author != user %} class="disabled" {% endif %} role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-			</ul>
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="move">Move to...</a></li>
+			  <li {% if bulletin.encrypted %}
+				  {% else %}
+				  {% if bulletin.author != user %} 
+				  class="disabled" 
+				  {% endif %}
+				  {% endif %}
+				  role="presentation"><a role="menuitem" tabindex="-1" href="." name="edit">Edit</a></li>
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="copy">Copy</a></li>
 		  </div>
 		  <h3>{{ bulletin.description }}</h3>
-		  <!-- (testing if folders are working) <h2> in folder: {{ bulletin.parent }} </h2> -->
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
 
 		  {% if bulletin.file_list|length > 0 %}
@@ -163,5 +168,26 @@
 	</div> <!-- col-sm-9 -->
   </div> <!-- row -->
 </div> <!-- container -->
+
+<!-- Modal -->
+<div class="modal fade" id="newFolder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <form method="post"> {% csrf_token %}
+	<div class="modal-dialog">
+      <div class="modal-content">
+		<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+		  <h4 class="modal-title">New Folder</h4>
+		</div>
+		<div class="modal-body">
+          <input type="text" placeholder="Untitled Folder" class="form-control" name="folder">
+		</div>
+		<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success" name="create_folder">Create</button>
+		</div>
+      </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+  </form>
+</div><!-- /.modal -->
 
 {% endblock %}
