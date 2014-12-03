@@ -9,4 +9,5 @@ urlpatterns = patterns('securewitness.views',
                        url(r'^signup/$', 'signup', name='signup'),
                        url(r'^post/$', 'post', name='post'),
                        url(r'^download/(?P<fname>[0-9]+_.+)/$', 'download', name='download'),
+                       url(r'^delete/folder/(?P<folder_id>\d+)/$', 'delete_folder', name='delete_folder'),
 )
