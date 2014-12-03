@@ -138,6 +138,17 @@ def download(request, fname):
                 return render(request, 'securewitness/nopermission.html', context)
 
 
+def copy_folder(request, folder_id):
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../../signup/')
+    else:
+        folder = Folder.objects.get(pk=folder_id)
+        folder_copy = Folder(owner=request.user, name='Copy of '+folder.name)
+        folder_copy.save()
+        return HttpResponseRedirect('../../..')
+
+
 def delete_folder(request, folder_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
