@@ -74,16 +74,16 @@
 
 				{% for folder in folder_list %}
 
-				<li class="list-group-item" id="folder_options">
+				<li class="list-group-item">
 				  <a href="#">{{ folder.name }}</a>
 				  <p class="pull-right">
-					<a href="#" data-toggle="tooltip" data-placement="top" title="Rename">
+					<a href="#rename_folder_{{ folder.pk }}" data-toggle="modal" title="Rename">
 					  <span class="glyphicon glyphicon-pencil"></span>
 					</a>
 					<a href="#" data-toggle="tooltip" data-placement="top" title="Copy">
 					  <span class="glyphicon glyphicon-list-alt"></span>
 					</a>
-					<a href="#" data-toggle="tooltip" data-placement="top" title="Delete">
+					<a href="#" type="submit" data-toggle="tooltip" data-placement="top" title="Delete">
 					  <span class="glyphicon glyphicon-trash"></span>
 					</a>
 				  </p>
@@ -188,8 +188,8 @@
   </div> <!-- row -->
 </div> <!-- container -->
 
-<!-- Modal -->
-<div class="modal fade" id="new_folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- New Folder -->
+<div class="modal fade" id="new_folder" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
   <form method="post"> {% csrf_token %}
 	<div class="modal-dialog">
       <div class="modal-content">
@@ -208,5 +208,30 @@
 	</div><!-- /.modal-dialog -->
   </form>
 </div><!-- /.modal -->
+
+{% for folder in folder_list %}
+
+<!-- Rename Folder -->
+<div class="modal fade" id="rename_folder_{{ folder.pk }}" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+  <form method="post"> {% csrf_token %}
+	<div class="modal-dialog">
+      <div class="modal-content">
+		<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+		  <h4 class="modal-title">Rename "{{ folder.name }}"</h4>
+		</div>
+		<div class="modal-body">
+          <input type="text" placeholder="New Name" class="form-control" name="folder">
+		</div>
+		<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success" name="rename_folder_{{ folder.pk }}">Rename</button>
+		</div>
+      </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+  </form>
+</div><!-- /.modal -->
+
+{% endfor %}
 
 {% endblock %}
