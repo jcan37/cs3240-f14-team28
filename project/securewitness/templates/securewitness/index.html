@@ -6,13 +6,13 @@
 
 {% block content %}
 
-{% if duplicate_folder %}
+{% if duplicate_folder or empty_folder_name %}
 
 <div class="alert alert-danger alert-dismissible" role="alert" style="margin-left:8px;margin-right:8px">
   <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span class="sr-only">Error:</span>
-  That folder already exists!
+  {% if duplicate_folder %}That folder already exists!{% else %}A folder name must be specified!{% endif %}
 </div>
 
 {% endif %}
@@ -65,7 +65,7 @@
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
 			  <h4 style="color:white;">
-				Folders <a href="#newFolder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
+				Folders <a href="#new_folder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
 			  </h4>
 
 			  {% if folder_list %}
@@ -74,11 +74,19 @@
 
 				{% for folder in folder_list %}
 
-				<li class="list-group-item">
+				<li class="list-group-item" id="folder_options">
 				  <a href="#">{{ folder.name }}</a>
-				  <a class="pull-right" href="#">
-					<span class="glyphicon glyphicon-trash"></span>
-				  </a>
+				  <p class="pull-right">
+					<a href="#" data-toggle="tooltip" data-placement="top" title="Rename">
+					  <span class="glyphicon glyphicon-pencil"></span>
+					</a>
+					<a href="#" data-toggle="tooltip" data-placement="top" title="Copy">
+					  <span class="glyphicon glyphicon-list-alt"></span>
+					</a>
+					<a href="#" data-toggle="tooltip" data-placement="top" title="Delete">
+					  <span class="glyphicon glyphicon-trash"></span>
+					</a>
+				  </p>
 				</li>
 
 				{% endfor %}
@@ -121,19 +129,19 @@
 	  <div class="thumbnail">
 		<div class="caption">
 		  <div class="dropdown pull-right">
-			<p class="dropdown-toggle text-muted muted" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+			<p class="dropdown-toggle text-muted muted" id="bulletin_options" data-toggle="dropdown" aria-expanded="true">
 			  Posted by {{ bulletin.author }} <a href="#" style="vertical-align:middle;"><span class="glyphicon glyphicon-cog"></span></a>
 			</p>
-			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="move">Move to...</a></li>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="bulletin_options">
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="move_bulletin">Move to...</a></li>
 			  <li {% if bulletin.encrypted %}
 				  {% else %}
 				  {% if bulletin.author != user %} 
 				  class="disabled" 
 				  {% endif %}
 				  {% endif %}
-				  role="presentation"><a role="menuitem" tabindex="-1" href="." name="edit">Edit</a></li>
-			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="copy">Copy</a></li>
+				  role="presentation"><a role="menuitem" tabindex="-1" href="." name="edit_bulletin">Edit</a></li>
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="copy_bulletin">Copy</a></li>
 		  </div>
 		  <h3>{{ bulletin.description }}</h3>
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
@@ -181,7 +189,7 @@
 </div> <!-- container -->
 
 <!-- Modal -->
-<div class="modal fade" id="newFolder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="new_folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <form method="post"> {% csrf_token %}
 	<div class="modal-dialog">
       <div class="modal-content">
