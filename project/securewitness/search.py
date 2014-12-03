@@ -4,12 +4,15 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from itertools import chain
 
-def search(field, name):
+def search(field, user):
     results = []
     bulletin_list = Bulletin.objects.filter(encrypted=False)
-    permissions = Permission.objects.filter(user=name)
+    if user is None:
+        permissions = []
+    else:
+        permissions = Permission.objects.filter(user=user)
     for permission in permissions:
-		bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+        bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
     if bulletin_list is not None and len(bulletin_list) > 0:
     	desc_match = bulletin_list.filter(description=field)
     	auth_match = bulletin_list.filter(author__username=field)

@@ -28,7 +28,7 @@ def index(request):
     bulletin_list = Bulletin.objects.filter(encrypted=False)
     folder_list = None
     if request.user.is_authenticated():
-        folder_list = Folder.objects.filter(owner=request.user)
+        folder_list = Folder.objects.filter(owner=request.user).order_by('name')
         permissions = Permission.objects.filter(user=request.user)
         for permission in permissions:
             bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
@@ -36,7 +36,7 @@ def index(request):
     if request.method == 'POST':
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
-            context['bulletin_list'] = search(search_field, request.user)
+            context['bulletin_list'] = search(search_field, None if not request.user.is_authenticated() else request.user)
         if 'create_folder' in request.POST:
             folder_name = request.POST.get('folder', '')
             folder = Folder(owner=request.user, name=folder_name)
@@ -46,17 +46,18 @@ def index(request):
                 context['duplicate_folder'] = True
             else:
                 folder.save()
-        for folder in folder_list:
-            if 'rename_folder_' + str(folder.pk) in request.POST:
-                new_name = request.POST.get('folder', '')
-                if new_name == '':
-                    context['empty_folder_name'] = True
-                elif len(Folder.objects.filter(owner=request.user).filter(name=new_name)) > 0:
-                    context['duplicate_folder'] = True
-                else:
-                    folder.name = new_name
-                    folder.save()
-    context['folder_list'] = folder_list.order_by('name')
+        if folder_list:
+            for folder in folder_list:
+                if 'rename_folder_' + str(folder.pk) in request.POST:
+                    new_name = request.POST.get('folder', '')
+                    if new_name == '':
+                        context['empty_folder_name'] = True
+                    elif len(Folder.objects.filter(owner=request.user).filter(name=new_name)) > 0:
+                        context['duplicate_folder'] = True
+                    else:
+                        folder.name = new_name
+                        folder.save()
+    context['folder_list'] = folder_list
     return render(request, 'securewitness/index.html', context)
 
 

@@ -210,6 +210,8 @@
   </form>
 </div><!-- /.modal -->
 
+{% if folder_list %}
+
 {% for folder in folder_list %}
 
 <!-- Rename Folder -->
@@ -234,5 +236,7 @@
 </div><!-- /.modal -->
 
 {% endfor %}
+
+{% endif %}
 
 {% endblock %}
