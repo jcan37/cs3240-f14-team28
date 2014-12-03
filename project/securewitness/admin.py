@@ -1,10 +1,5 @@
 from django.contrib import admin
-from securewitness.models import Bulletin, File, Folder, Permission
-
-class BulletinInline(admin.TabularInline):
-	model = Bulletin
-	extra = 3
-
+from securewitness.models import Bulletin, File, Folder, Permission, Filing
 
 class FileInline(admin.TabularInline):
 	model = File
@@ -13,9 +8,9 @@ class FileInline(admin.TabularInline):
 
 class BulletinAdmin(admin.ModelAdmin):
 	inlines = [FileInline]
-	list_display = ['description', 'author', 'pub_date', 'location', 'parent', 'encrypted']
+	list_display = ['description', 'author', 'pub_date', 'location', 'encrypted']
 	list_filter = ['pub_date']
-	search_fields = ['description', 'author__username', 'location', 'parent__name']
+	search_fields = ['description', 'author__username', 'location']
 
 
 class FileAdmin(admin.ModelAdmin):
@@ -24,9 +19,8 @@ class FileAdmin(admin.ModelAdmin):
 
 
 class FolderAdmin(admin.ModelAdmin):
-	inlines = [BulletinInline]
         list_display = ['name', 'owner']
-        search_fields = ['name']
+        search_fields = ['name', 'owner']
 
 
 class PermissionAdmin(admin.ModelAdmin):
@@ -34,7 +28,13 @@ class PermissionAdmin(admin.ModelAdmin):
         search_fields = ['user__username', 'bulletin__description']
 
 
+class FilingAdmin(admin.ModelAdmin):
+        list_display = ['bulletin', 'folder']
+        search_fields = ['bulletin__description', 'bulletin__author', 'folder__name', 'folder__owner']
+
+
 admin.site.register(Bulletin, BulletinAdmin)
 admin.site.register(Folder, FolderAdmin)
 admin.site.register(File, FileAdmin)
 admin.site.register(Permission, PermissionAdmin)
+admin.site.register(Filing, FilingAdmin)
