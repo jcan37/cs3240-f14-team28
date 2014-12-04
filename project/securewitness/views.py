@@ -73,6 +73,7 @@ def index(request):
                         folder.save()
                     break
                 if 'folder_' + str(folder.pk) in request.POST:
+                    # context['active_folder'] = {'folder_'+str(folder.pk): True}
                     context['bulletin_list'] = folder.bulletin_list().order_by('-pub_date')
                     break
     context['folder_list'] = folder_list.order_by('name')
