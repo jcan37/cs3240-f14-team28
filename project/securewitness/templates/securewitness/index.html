@@ -144,7 +144,13 @@
 				  {% endif %}
 				  role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
 			  <li role="presentation"><a role="menuitem" tabindex="-1" href="../copy/bulletin/{{ bulletin.id }}">Copy</a></li>
-			  <li role="presentation"><a role="menuitem" tabindex="-1" href="../delete/bulletin/{{ bulletin.id }}">Delete</a></li>
+			  <li {% if bulletin.encrypted %}
+				  {% else %}
+				  {% if bulletin.author != user %} 
+				  class="disabled" 
+				  {% endif %}
+				  {% endif %}
+				  role="presentation"><a role="menuitem" tabindex="-1" href="../delete/bulletin/{{ bulletin.id }}">Delete</a></li>
 			</ul>
 		  </div>
 		  <h3>{{ bulletin.description }}</h3>
