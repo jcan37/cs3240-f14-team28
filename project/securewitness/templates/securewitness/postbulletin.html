@@ -12,10 +12,10 @@
   <form action="" method="post" role="form" enctype="multipart/form-data">
  	{% csrf_token %}
  	<div class="form-group">
- 	  <label for="id_description">Description:</label><input id="id_description" maxlength="512" name="description" type="text" class="form-control">
+ 	  <label for="id_description">Description:</label><input id="id_description" maxlength="128" name="description" type="text" class="form-control">
  	</div>
  	<div class="form-group">
- 	  <label for="id_location">Location:</label><input id="id_location" maxlength="256" name="location" type="text" class="form-control">
+ 	  <label for="id_location">Location:</label><input id="id_location" maxlength="128" name="location" type="text" class="form-control">
  	</div>
  	<div class="form-group">
  	  <label for="id_files">Files:</label><input id="id_files" name="files" type="file" multiple>
@@ -29,21 +29,16 @@
 
  	<div class="form-group">
  	  <label for="id_folders">Select folders to place in:</label>
-		<p></p>
+	  <select id="id_folders" name="folders">
+		<option value="None">None</option>
 		{% if folder_list %}
-		<select id="id_folders" name="folders">
 		{% for folder in folder_list %}
-			<option value="{{ folder.name }}">{{ folder.name }}</option>
+		<option value="{{ folder.name }}">{{ folder.name }}</option>
 		{% endfor %}
-		</select>
-		{% else %}
-			<p>(Currently no folders)</p>
 		{% endif %}
+	  </select>
  	</div>
-	<div>
- 	  <!-- (old button type) <input type="submit" class="btn btn-default" value="Post Bulletin"> -->
-          <button type="submit" class="btn btn-warning" value="post" name="post">Post Bulletin</button>
-	</div>
+    <button type="submit" class="btn btn-warning" value="post" name="post">Post Bulletin</button>
   </form>
 </div>
 

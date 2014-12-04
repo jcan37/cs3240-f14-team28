@@ -102,16 +102,19 @@ def post(request):
     if not context['logged_in']:
         return HttpResponseRedirect('../signup/')
     else:
-    	folder_list = Folder.objects.filter(owner=request.user)
+    	folder_list = Folder.objects.filter(owner=request.user).order_by('name')
     	context['folder_list'] = folder_list
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                     description=request.POST['description'], 
                                     location=request.POST['location'],
                                     encrypted='encrypted' in request.POST)
-            # if len(folder_list) > 0:
-            #     new_bulletin.parent = Folder.objects.filter(name=request.POST['folders'], owner=request.user)[0]
             new_bulletin.save()
+            if len(folder_list) > 0:
+                folder_name = request.POST['folders']
+                if folder_name != 'None':
+                    new_filing = Filing(folder=Folder.objects.filter(name=folder_name, owner=request.user)[0], bulletin=new_bulletin)
+                    new_filing.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
                 new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex, content_type=f.content_type)
