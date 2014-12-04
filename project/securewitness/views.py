@@ -38,25 +38,40 @@ def index(request):
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
             context['bulletin_list'] = search(search_field, None if not request.user.is_authenticated() else request.user)
-        if 'create_folder' in request.POST:
+        elif 'create_folder' in request.POST:
             folder_name = request.POST.get('folder', '')
-            folder = Folder(owner=request.user, name=folder_name)
             if folder_name == '':
                 context['empty_folder_name'] = True
             elif len(Folder.objects.filter(owner=request.user).filter(name=folder_name)) > 0:
                 context['duplicate_folder'] = True
             else:
+                folder = Folder(owner=request.user, name=folder_name)
                 folder.save()
-        for folder in folder_list:
-            if 'rename_folder_' + str(folder.pk) in request.POST:
-                new_name = request.POST.get('folder', '')
-                if new_name == '':
-                    context['empty_folder_name'] = True
-                elif len(Folder.objects.filter(owner=request.user).filter(name=new_name)) > 0:
-                    context['duplicate_folder'] = True
-                else:
-                    folder.name = new_name
-                    folder.save()
+        else:
+            for bulletin in bulletin_list:
+                if 'create_folder_move_bulletin_' + str(bulletin.pk) in request.POST:
+                    folder_name = request.POST.get('folder', '')
+                    if folder_name == '':
+                        context['empty_folder_name'] = True
+                    elif len(Folder.objects.filter(owner=request.user).filter(name=folder_name)) > 0:
+                        context['duplicate_folder'] = True
+                    else:
+                        folder = Folder(owner=request.user, name=folder_name)
+                        folder.save()
+                        filing = Filing(folder=folder, bulletin=bulletin)
+                        filing.save()
+                    break
+            for folder in folder_list:
+                if 'rename_folder_' + str(folder.pk) in request.POST:
+                    new_name = request.POST.get('folder', '')
+                    if new_name == '':
+                        context['empty_folder_name'] = True
+                    elif len(Folder.objects.filter(owner=request.user).filter(name=new_name)) > 0:
+                        context['duplicate_folder'] = True
+                    else:
+                        folder.name = new_name
+                        folder.save()
+                    break
     context['folder_list'] = folder_list.order_by('name')
     return render(request, 'securewitness/index.html', context)
 
@@ -116,7 +131,7 @@ def post(request):
 def move_bulletin(request, folder_id, bulletin_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         filing = Filing(folder=Folder.objects.get(pk=folder_id), bulletin=Bulletin.objects.get(pk=bulletin_id))
         filing.save()
@@ -126,7 +141,7 @@ def move_bulletin(request, folder_id, bulletin_id):
 def copy_bulletin(request, b_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         new_bulletin = Bulletin.objects.get(id=b_id)
         new_bulletin.id = None
@@ -155,7 +170,7 @@ def copy_bulletin(request, b_id):
 def delete_bulletin(request, b_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         old_bulletin = Bulletin.objects.get(id=b_id)
         files = File.objects.filter(bulletin=Bulletin.objects.get(id=b_id))
@@ -195,7 +210,7 @@ def download(request, fname):
 def copy_folder(request, folder_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         folder = Folder.objects.get(pk=folder_id)
         folder_copy = Folder(owner=request.user, name='Copy of '+folder.name)
@@ -206,7 +221,7 @@ def copy_folder(request, folder_id):
 def delete_folder(request, folder_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         folder = Folder.objects.get(pk=folder_id)
         folder.delete()
