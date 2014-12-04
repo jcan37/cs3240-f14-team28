@@ -31,7 +31,7 @@
 
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
-			  <form role="search" method="post"> {% csrf_token %}
+			  <form method="post"> {% csrf_token %}
 				<div class="input-group">
 				  <input type="text" placeholder="Description, Author or Location" class="form-control" name="description" id="description">
 				  <div class="input-group-btn">
@@ -64,37 +64,40 @@
 
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
-			  <h4 style="color:white;">
-				Folders <a href="#new_folder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
-			  </h4>
+			  <form method="post"> {% csrf_token %}
+				<h4 style="color:white;">
+				  Folders <a href="#new_folder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
+				</h4>
 
-			  {% if folder_list %}
-			  
-			  <div class="list-group var-length-nav">
+				{% if folder_list %}
+				
+				<div class="list-group var-length-nav">
+				  
+				  {% for folder in folder_list %}
 
-				{% for folder in folder_list %}
-
-				<li class="list-group-item">
-				  <a href="#">{{ folder.name }} <span class="badge">{{ folder.bulletin_list|length }}</span></a>
-				  <p class="pull-right">
-					<a href="#rename_folder_{{ folder.pk }}" data-toggle="modal" title="Rename">
-					  <span class="glyphicon glyphicon-pencil"></span>
-					</a>
-					<a href="../copy/folder/{{ folder.pk }}" title="Copy">
-					  <span class="glyphicon glyphicon-list-alt"></span>
-					</a>
-					<a href="../delete/folder/{{ folder.pk }}" title="Delete">
-					  <span class="glyphicon glyphicon-trash"></span>
-					</a>
-				  </p>
-				</li>
-
-				{% endfor %}
-
-			  </div>
-
-			  {% endif %}
-
+				  <li class="list-group-item">
+					<button type="submit" name="folder_{{ folder.pk }}" style="background:none;border:none;padding:0px;">
+					  {{ folder.name }} <span class="badge">{{ folder.bulletin_list|length }}</span>
+					</button>
+					<p class="pull-right">
+					  <a href="#rename_folder_{{ folder.pk }}" data-toggle="modal" title="Rename">
+						<span class="glyphicon glyphicon-pencil"></span>
+					  </a>
+					  <a href="../copy/folder/{{ folder.pk }}" title="Copy">
+						<span class="glyphicon glyphicon-list-alt"></span>
+					  </a>
+					  <a href="../delete/folder/{{ folder.pk }}" title="Delete">
+						<span class="glyphicon glyphicon-trash"></span>
+					  </a>
+					</p>
+				  </li>
+				  
+				  {% endfor %}
+				  
+				</div>
+				
+				{% endif %}
+			  </form>
 			</div> <!-- caption -->
 		  </div> <!-- thumbnail -->
 

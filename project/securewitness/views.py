@@ -72,6 +72,9 @@ def index(request):
                         folder.name = new_name
                         folder.save()
                     break
+                if 'folder_' + str(folder.pk) in request.POST:
+                    context['bulletin_list'] = folder.bulletin_list().order_by('-pub_date')
+                    break
     context['folder_list'] = folder_list.order_by('name')
     return render(request, 'securewitness/index.html', context)
 
