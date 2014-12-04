@@ -69,6 +69,15 @@ class Folder(models.Model):
         name = models.CharField(max_length=128)
 
 
+        def bulletin_list(self):
+                filings = Filing.objects.filter(folder=self)
+                if filings is None or len(filings) == 0:
+                        return []
+                for filing in filings:
+                        bulletin_list |= Bulletin.objects.filter(pk=filing.bulletin.pk)
+                return bulletin_list.order_by('description')
+
+
         def __str__(self):
                 return str(self.name)
 
