@@ -1,4 +1,7 @@
 import uuid
+import datetime
+
+from datetime import date, timedelta
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
@@ -37,6 +40,50 @@ def index(request):
         if 'search' in request.POST:
             search_field = request.POST.get('description', '')
             context['bulletin_list'] = search(search_field, None if not request.user.is_authenticated() else request.user)
+        if 'everybody' in request.POST:
+            if request.user.is_authenticated():
+                permissions = Permission.objects.filter(user=request.user)
+                for permission in permissions:
+                    bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+            context['bulletin_list'] = bulletin_list.order_by('-pub_date')
+        if 'you' in request.POST:
+            context['bulletin_list'] = Bulletin.objects.filter(author=request.user)
+        if 'any' in request.POST:
+            if request.user.is_authenticated():
+                permissions = Permission.objects.filter(user=request.user)
+                for permission in permissions:
+                    bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+            context['bulletin_list'] = bulletin_list.order_by('-pub_date')
+        if 'week' in request.POST:
+            if request.user.is_authenticated():
+                permissions = Permission.objects.filter(user=request.user)
+                for permission in permissions:
+                    bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+            d = timezone.now() - timedelta(days=7)
+            for entry in bulletin_list:
+                if entry.pub_date < d:
+                    bulletin_list.remove(entry)
+            context['bulletin_list'] = bulletin_list.order_by('-pub_date')
+        if 'month' in request.POST:
+            if request.user.is_authenticated():
+                permissions = Permission.objects.filter(user=request.user)
+                for permission in permissions:
+                    bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+            d = timezone.now() - timedelta(days=30)
+            for entry in bulletin_list:
+                if entry.pub_date < d:
+                    bulletin_list.remove(entry)
+            context['bulletin_list'] = bulletin_list.order_by('-pub_date')
+        if 'year' in request.POST:
+            if request.user.is_authenticated():
+                permissions = Permission.objects.filter(user=request.user)
+                for permission in permissions:
+                    bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
+            d = timezone.now() - timedelta(days=365)
+            for entry in bulletin_list:
+                if entry.pub_date < d:
+                    bulletin_list.remove(entry)
+            context['bulletin_list'] = bulletin_list.order_by('-pub_date')
         if 'create_folder' in request.POST:
             folder_name = request.POST.get('folder', '')
             folder = Folder(owner=request.user, name=folder_name)
