@@ -47,7 +47,7 @@ class Bulletin(models.Model):
         def __str__(self):
 		if self.parent is not None:
 			return str(self.parent) + '/' + str(self.description)
-		return str(self.description)
+		return str(self.id) + ' ' + str(self.author) + ' ' + str(self.description)
 
 
 class File(models.Model):
@@ -64,7 +64,7 @@ class File(models.Model):
 
 
 	def __str__(self):
-		return str(self.bulletin) + '/' + str(self.name)
+		return str(self.bulletin) + '/' + str(self.id) + '_' + str(self.name)
 
 
 class Folder(models.Model):
