@@ -41,33 +41,50 @@
 			  </form>
 
 			  {% if logged_in %}
+			  {% comment %}
+			  <form method="post"> {% csrf_token %}
+				<h4 style="color:white;">Show posts by</h4>
+				<ul class="list-group">
+				  <li class="list-group-item {% if everybody_active %}active{% endif %}">
+					<button type="submit" name="everybody" style="background:none;border:none;padding:0px;">
+					  Everybody
+					</button>
+				  </li>
+				  <li class="list-group-item {% if you_active %}active{% endif %}">
+					<button type="submit" name="you" style="background:none;border:none;padding:0px;">
+					  You
+					</button>
+				  </li>
+				</ul>
+			  </form>
 
-			  <h4 style="color:white;">Show posts by</h4>
-			  <div class="list-group">
-				  <a href="." name="everybody" class="list-group-item active">Everybody
-				  <button type="submit" class="btn btn-default" id="everybody" name="everybody"></button></a>
-				<form role="you" id="you" name="you" method="post"> {% csrf_token %}
-				  <a href="." name="you" class="list-group-item">You<button type="submit" class="btn btn-default" id="you" name="you"></button></a>
-				</form></a>
-			  </div>
-			  
 			  {% endif %}
-
-			  <h4 style="color:white;">Show posts since</h4>
-			  <div class="list-group">
-				<form role="any" id="any" name="any" method="post"> {% csrf_token %}
-				  <a href="." name="any" class="list-group-item">Any<button type="submit" class="btn btn-default" id="any" name="any"></button></a>
-				</form></a>
-				<form role="week" id="week" name="week" method="post"> {% csrf_token %}
-				  <a href="." name="week" class="list-group-item">Past Week<button type="submit" class="btn btn-default" id="week" name="week"></button></a>
-				</form></a>
-				<form role="month" id="month" name="month" method="post"> {% csrf_token %}
-				  <a href="." name="month" class="list-group-item">Past Month<button type="submit" class="btn btn-default" id="month" name="month"></button></a>
-				</form></a>
-				<form role="year" id="year" name="year" method="post"> {% csrf_token %}
-				  <a href="." name="year" class="list-group-item">Past Year<button type="submit" class="btn btn-default" id="year" name="year"></button></a>
-				</form></a>
-			  </div>
+			  
+			  <form method="post"> {% csrf_token %}
+				<h4 style="color:white;">Show posts since</h4>
+				<ul class="list-group">
+				  <li class="list-group-item">
+					<button type="submit" name="any" style="background:none;border:none;padding:0px;">
+					  Any Date
+					</button>
+				  </li>
+				  <li class="list-group-item">
+					<button type="submit" name="week" style="background:none;border:none;padding:0px;">
+					  Past Week
+					</button>
+				  </li>
+				  <li class="list-group-item">
+					<button type="submit" name="month" style="background:none;border:none;padding:0px;">
+					  Past Month
+					</button>
+				  </li>
+				  <li class="list-group-item">
+					<button type="submit" name="year" style="background:none;border:none;padding:0px;">
+					  Past Year
+					</button>
+				  </li>
+				</ul>
+			  </form>
 			</div> <!-- caption -->
 		  </div> <!-- thumbnail -->
 
@@ -75,6 +92,7 @@
 
 		  <div class="thumbnail" style="background:black;">
 			<div class="caption">
+			  {% endcomment %}
 			  <form method="post"> {% csrf_token %}
 				<h4 style="color:white;">
 				  Folders <a href="#new_folder" style="vertical-align:middle;" data-toggle="modal"><span class="glyphicon glyphicon-plus-sign"></span></a>
