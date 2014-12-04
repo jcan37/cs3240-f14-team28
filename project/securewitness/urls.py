@@ -10,6 +10,7 @@ urlpatterns = patterns('securewitness.views',
                        url(r'^post/$', 'post', name='post'),
                        url(r'^download/(?P<fname>[0-9]+_.+)/$', 'download', name='download'),
                        url(r'^copy/(?P<b_id>[0-9]+)/$', 'copy_bulletin', name='copy_bulletin'),
+                       url(r'^delete/(?P<b_id>[0-9]+)/$', 'delete_bulletin', name='delete_bulletin'),
                        url(r'^copy/folder/(?P<folder_id>\d+)/$', 'copy_folder', name='copy_folder'),
                        url(r'^delete/folder/(?P<folder_id>\d+)/$', 'delete_folder', name='delete_folder'),
 )

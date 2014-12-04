@@ -137,6 +137,19 @@ def copy_bulletin(request, b_id):
             # remove('securewitness/files/' + str(f.id) + '_' + f.name)
         return HttpResponseRedirect('../../index')
 
+def delete_bulletin(request, b_id):
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../signup/')
+    else:
+        old_bulletin = Bulletin.objects.get(id=b_id)
+        files = File.objects.filter(bulletin=Bulletin.objects.get(id=b_id))
+        for f in files:
+            remove('securewitness/files/' + str(f.id) + '_' + f.name)
+            f.delete()
+        old_bulletin.delete()
+        return HttpResponseRedirect('../../index')
+
 
 def download(request, fname):
     context = retrieve_user_state(request)

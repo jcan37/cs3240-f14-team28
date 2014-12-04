@@ -142,7 +142,7 @@
 				  {% endif %}
 				  role="presentation"><a role="menuitem" tabindex="-1" href="." name="edit_bulletin">Edit</a></li>
 			  <li role="presentation"><a role="menuitem" tabindex="-1" href="../copy/{{ bulletin.id }}" name="copy">Copy</a></li>
-			  <li role="presentation"><a role="menuitem" tabindex="-1" href="." name="delete_bulletin">Delete</a></li>
+			  <li role="presentation"><a role="menuitem" tabindex="-1" href="../delete/{{ bulletin.id }}" name="delete_bulletin">Delete</a></li>
 		  </div>
 		  <h3>{{ bulletin.description }}</h3>
 		  <p>{{ bulletin.location }} &mdash; {{ bulletin.time_stamp }}</p>
