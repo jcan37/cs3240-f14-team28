@@ -44,7 +44,7 @@ class Bulletin(models.Model):
                 return pub_date.strftime('%b %-d, %Y at %-I:%M %p')
 
         def __str__(self):
-		return str(self.description)
+		return str(self.id) + ' ' + str(self.author) + ' ' + str(self.description)
 
 
 class File(models.Model):
@@ -61,7 +61,7 @@ class File(models.Model):
 
 
 	def __str__(self):
-		return str(self.bulletin) + '/' + str(self.name)
+		return str(self.bulletin) + '/' + str(self.id) + '_' + str(self.name)
 
 
 class Folder(models.Model):
