@@ -134,7 +134,10 @@ def copy_bulletin(request, b_id):
                       '_' + f.name, 'wb') as dst:
                 encrypt(old_file, dst, uuid.UUID(f.encryption_key))
             old_file.close()
-            # remove('securewitness/files/' + str(f.id) + '_' + f.name)
+        for permission in Permission.objects.filter(bulletin=Bulletin.objects.get(id=b_id)):
+            permission.id = None
+            permission.bulletin = new_bulletin
+            permission.save()
         return HttpResponseRedirect('../../index')
 
 def delete_bulletin(request, b_id):
