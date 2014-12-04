@@ -8,8 +8,7 @@ class Bulletin(models.Model):
 	description = models.CharField(max_length=128)
 	author = models.ForeignKey(settings.AUTH_USER_MODEL)
 	pub_date = models.DateTimeField('date published')
-	location = models.CharField(max_length=256, default='Charlottesville, VA')
-	parent = models.ForeignKey('Folder', blank=True, null=True)
+	location = models.CharField(max_length=128, default='Charlottesville, VA')
 	encrypted = models.BooleanField(default=True)
         
         
@@ -45,8 +44,6 @@ class Bulletin(models.Model):
                 return pub_date.strftime('%b %-d, %Y at %-I:%M %p')
 
         def __str__(self):
-		if self.parent is not None:
-			return str(self.parent) + '/' + str(self.description)
 		return str(self.description)
 
 
@@ -64,12 +61,20 @@ class File(models.Model):
 
 
 	def __str__(self):
-		return str(self.bulletin) + '/' + str(self.name)
+		return str(self.bulletin) + '/' + str(self.id) + '_' + str(self.name)
 
 
 class Folder(models.Model):
         owner = models.ForeignKey(settings.AUTH_USER_MODEL)
         name = models.CharField(max_length=128)
+
+
+        def bulletin_list(self):
+                filings = Filing.objects.filter(folder=self)
+                bulletin_list = Bulletin.objects.none()
+                for filing in filings:
+                        bulletin_list |= Bulletin.objects.filter(pk=filing.bulletin.pk)
+                return bulletin_list.order_by('description')
 
 
         def __str__(self):
@@ -83,3 +88,12 @@ class Permission(models.Model):
 
         def __str__(self):
                 return str(self.user.username) + ' can view ' + str(self.bulletin)
+
+
+class Filing(models.Model):
+        folder = models.ForeignKey('Folder')
+        bulletin = models.ForeignKey('bulletin')
+
+        
+        def __str__(self):
+                return str(self.bulletin) + ' is filed under ' + str(self.folder)

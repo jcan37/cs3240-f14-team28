@@ -10,18 +10,19 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from os import remove
 
-from models import Bulletin, File, Permission, Folder
+from models import Bulletin, File, Permission, Folder, Filing
 from users import retrieve_user_state, signup_user
 from files import encrypt, decrypt
 from search import search
 
 # Classes
 # **********
+'''
 class BulletinForm(forms.Form):
     description = forms.CharField(label='Description', max_length=512)
     location = forms.CharField(label='Location', max_length=256)
     files = forms.FileField(label='Files')
-
+'''
 
 # Views
 # **********
@@ -29,9 +30,9 @@ def index(request):
     context = retrieve_user_state(request)
     context['not_fire_fox'] = request.META['HTTP_USER_AGENT'] != 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
     bulletin_list = Bulletin.objects.filter(encrypted=False)
-    folder_list = None
+    folder_list = Folder.objects.none()
     if request.user.is_authenticated():
-        folder_list = Folder.objects.filter(owner=request.user).order_by('name')
+        folder_list = Folder.objects.filter(owner=request.user)
         permissions = Permission.objects.filter(user=request.user)
         for permission in permissions:
             bulletin_list |= Bulletin.objects.filter(pk=permission.bulletin.pk)
@@ -84,16 +85,29 @@ def index(request):
                 if entry.pub_date < d:
                     bulletin_list.remove(entry)
             context['bulletin_list'] = bulletin_list.order_by('-pub_date')
-        if 'create_folder' in request.POST:
+        elif 'create_folder' in request.POST:
             folder_name = request.POST.get('folder', '')
-            folder = Folder(owner=request.user, name=folder_name)
             if folder_name == '':
                 context['empty_folder_name'] = True
             elif len(Folder.objects.filter(owner=request.user).filter(name=folder_name)) > 0:
                 context['duplicate_folder'] = True
             else:
+                folder = Folder(owner=request.user, name=folder_name)
                 folder.save()
-        if folder_list:
+        else:
+            for bulletin in bulletin_list:
+                if 'create_folder_move_bulletin_' + str(bulletin.pk) in request.POST:
+                    folder_name = request.POST.get('folder', '')
+                    if folder_name == '':
+                        context['empty_folder_name'] = True
+                    elif len(Folder.objects.filter(owner=request.user).filter(name=folder_name)) > 0:
+                        context['duplicate_folder'] = True
+                    else:
+                        folder = Folder(owner=request.user, name=folder_name)
+                        folder.save()
+                        filing = Filing(folder=folder, bulletin=bulletin)
+                        filing.save()
+                    break
             for folder in folder_list:
                 if 'rename_folder_' + str(folder.pk) in request.POST:
                     new_name = request.POST.get('folder', '')
@@ -104,7 +118,11 @@ def index(request):
                     else:
                         folder.name = new_name
                         folder.save()
-    context['folder_list'] = folder_list
+                    break
+                if 'folder_' + str(folder.pk) in request.POST:
+                    context['bulletin_list'] = folder.bulletin_list().order_by('-pub_date')
+                    break
+    context['folder_list'] = folder_list.order_by('name')
     return render(request, 'securewitness/index.html', context)
 
 
@@ -131,16 +149,19 @@ def post(request):
     if not context['logged_in']:
         return HttpResponseRedirect('../signup/')
     else:
-    	folder_list = Folder.objects.filter(owner=request.user)
+    	folder_list = Folder.objects.filter(owner=request.user).order_by('name')
     	context['folder_list'] = folder_list
         if request.method == 'POST':
             new_bulletin = Bulletin(author=request.user, pub_date=timezone.now(), 
                                     description=request.POST['description'], 
                                     location=request.POST['location'],
                                     encrypted='encrypted' in request.POST)
-            if len(folder_list) > 0:
-                new_bulletin.parent = Folder.objects.filter(name=request.POST['folders'], owner=request.user)[0]
             new_bulletin.save()
+            if len(folder_list) > 0:
+                folder_name = request.POST['folders']
+                if folder_name != 'None':
+                    new_filing = Filing(folder=Folder.objects.filter(name=folder_name, owner=request.user)[0], bulletin=new_bulletin)
+                    new_filing.save()
             key = uuid.uuid4()
             for f in request.FILES.getlist('files'):
                 new_file = File(bulletin=new_bulletin, name=f.name, encryption_key=key.hex, content_type=f.content_type)
@@ -158,6 +179,59 @@ def post(request):
             		new_permission.save()
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
+
+
+def move_bulletin(request, folder_id, bulletin_id):
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../../../signup/')
+    else:
+        filing = Filing(folder=Folder.objects.get(pk=folder_id), bulletin=Bulletin.objects.get(pk=bulletin_id))
+        filing.save()
+        return HttpResponseRedirect('../../..')
+
+
+def copy_bulletin(request, b_id):
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../../../signup/')
+    else:
+        new_bulletin = Bulletin.objects.get(id=b_id)
+        new_bulletin.id = None
+        new_bulletin.pub_date = timezone.now()
+        new_bulletin.author = request.user
+        new_bulletin.save()
+
+        files = File.objects.filter(bulletin=Bulletin.objects.get(id=b_id))
+        for f in files:
+            old_file = open('securewitness/files/' + str(f.id) + '_' + f.name, 'r')
+            new_file = f
+            new_file.bulletin = new_bulletin
+            new_file.id = None
+            new_file.save()
+            with open('securewitness/files/' + str(new_file.id) + 
+                      '_' + f.name, 'wb') as dst:
+                encrypt(old_file, dst, uuid.UUID(f.encryption_key))
+            old_file.close()
+        for permission in Permission.objects.filter(bulletin=Bulletin.objects.get(id=b_id)):
+            permission.id = None
+            permission.bulletin = new_bulletin
+            permission.save()
+        return HttpResponseRedirect('../../..')
+
+
+def delete_bulletin(request, b_id):
+    context = retrieve_user_state(request)
+    if not context['logged_in']:
+        return HttpResponseRedirect('../../../signup/')
+    else:
+        old_bulletin = Bulletin.objects.get(id=b_id)
+        files = File.objects.filter(bulletin=Bulletin.objects.get(id=b_id))
+        for f in files:
+            remove('securewitness/files/' + str(f.id) + '_' + f.name)
+            f.delete()
+        old_bulletin.delete()
+        return HttpResponseRedirect('../../..')
 
 
 def download(request, fname):
@@ -189,7 +263,7 @@ def download(request, fname):
 def copy_folder(request, folder_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         folder = Folder.objects.get(pk=folder_id)
         folder_copy = Folder(owner=request.user, name='Copy of '+folder.name)
@@ -200,7 +274,7 @@ def copy_folder(request, folder_id):
 def delete_folder(request, folder_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
-        return HttpResponseRedirect('../../signup/')
+        return HttpResponseRedirect('../../../signup/')
     else:
         folder = Folder.objects.get(pk=folder_id)
         folder.delete()
