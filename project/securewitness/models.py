@@ -44,7 +44,7 @@ class Bulletin(models.Model):
                 return pub_date.strftime('%b %-d, %Y at %-I:%M %p')
 
         def __str__(self):
-		return str(self.id) + ' ' + str(self.author) + ' ' + str(self.description)
+		return str(self.description)
 
 
 class File(models.Model):
@@ -71,8 +71,7 @@ class Folder(models.Model):
 
         def bulletin_list(self):
                 filings = Filing.objects.filter(folder=self)
-                if filings is None or len(filings) == 0:
-                        return []
+                bulletin_list = Bulletin.objects.none()
                 for filing in filings:
                         bulletin_list |= Bulletin.objects.filter(pk=filing.bulletin.pk)
                 return bulletin_list.order_by('description')

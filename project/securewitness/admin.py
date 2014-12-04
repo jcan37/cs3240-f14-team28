@@ -29,8 +29,8 @@ class PermissionAdmin(admin.ModelAdmin):
 
 
 class FilingAdmin(admin.ModelAdmin):
-        list_display = ['bulletin', 'folder']
-        search_fields = ['bulletin__description', 'bulletin__author', 'folder__name', 'folder__owner']
+        list_display = ['folder', 'bulletin']
+        search_fields = ['folder__name', 'folder__owner', 'bulletin__description', 'bulletin__author']
 
 
 admin.site.register(Bulletin, BulletinAdmin)
