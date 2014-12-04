@@ -112,6 +112,7 @@ def post(request):
             return render(request, 'securewitness/bulletinposted.html', context)
     return render(request, 'securewitness/postbulletin.html', context)
 
+
 def copy_bulletin(request, b_id):
     context = retrieve_user_state(request)
     if not context['logged_in']:
@@ -138,7 +139,8 @@ def copy_bulletin(request, b_id):
             permission.id = None
             permission.bulletin = new_bulletin
             permission.save()
-        return HttpResponseRedirect('../../index')
+        return HttpResponseRedirect('../../..')
+
 
 def delete_bulletin(request, b_id):
     context = retrieve_user_state(request)
@@ -151,7 +153,7 @@ def delete_bulletin(request, b_id):
             remove('securewitness/files/' + str(f.id) + '_' + f.name)
             f.delete()
         old_bulletin.delete()
-        return HttpResponseRedirect('../../index')
+        return HttpResponseRedirect('../../..')
 
 
 def download(request, fname):
